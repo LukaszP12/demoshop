@@ -1,4 +1,4 @@
-package main.java.com.example.demoshop.domain.model;
+package com.example.demoshop.domain.model;
 
 import java.util.ArrayList;
 import java.util.Collections;

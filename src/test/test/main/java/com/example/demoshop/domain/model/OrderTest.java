@@ -1,4 +1,4 @@
-package com.example.demoshop.domain;
+package main.java.com.example.demoshop.domain.model;
 
 import com.example.demoshop.domain.model.Money;
 import com.example.demoshop.domain.model.Order;
