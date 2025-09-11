@@ -8,8 +8,12 @@ public class User {
     private final UserId id;
     private String name;
     private String email;
+    private Role role;
+    private Address address;
 
-    public User(String name, String email) {
+    public User(String name, String email, Role role, Address address) {
+        this.role = role;
+        this.address = address;
         this.id = UserId.newId();
         this.name = Objects.requireNonNull(name);
         this.email = Objects.requireNonNull(email);
@@ -18,6 +22,8 @@ public class User {
     public UserId id() { return id; }
     public String name() { return name; }
     public String email() { return email; }
+    public Role role() { return role; }
+    public Address address() { return address; }
 
     public void changeName(String newName) {
         if (newName == null || newName.isBlank()) throw new IllegalArgumentException("Name cannot be blank");
@@ -28,6 +34,15 @@ public class User {
         if (newEmail == null || newEmail.isBlank()) throw new IllegalArgumentException("Email cannot be blank");
         this.email = newEmail;
     }
+
+    public void changeRole(Role newRole) {
+        this.role = Objects.requireNonNull(newRole);
+    }
+
+    public void changeAddress(Address newAddress) {
+        this.address = newAddress; // can be null if user removes address
+    }
+
 
     // Value object for User ID
     public static class UserId {
