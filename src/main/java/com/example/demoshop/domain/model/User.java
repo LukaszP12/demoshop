@@ -33,7 +33,7 @@ public class User {
     public static class UserId {
         private final String value;
 
-        private UserId(String value) { this.value = value; }
+        public UserId(String value) { this.value = value; }
 
         public static UserId newId() { return new UserId(UUID.randomUUID().toString()); }
 

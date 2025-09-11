@@ -44,4 +44,8 @@ public final class Money {
     public String toString() {
         return amount.toPlainString();
     }
+
+    public boolean isZeroOrNegative() {
+        return amount.compareTo(BigDecimal.ZERO) <= 0;
+    }
 }
