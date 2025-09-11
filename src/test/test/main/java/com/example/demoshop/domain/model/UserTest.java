@@ -1,9 +1,9 @@
 package main.java.com.example.demoshop.domain.model;
 
 import com.example.demoshop.domain.event.UserRegisteredEvent;
-import com.example.demoshop.domain.model.Address;
-import com.example.demoshop.domain.model.Role;
-import com.example.demoshop.domain.model.User;
+import com.example.demoshop.domain.model.user.Address;
+import com.example.demoshop.domain.model.user.Role;
+import com.example.demoshop.domain.model.user.User;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
