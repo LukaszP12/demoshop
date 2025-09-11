@@ -26,24 +26,16 @@ public class OrderWorkflowService {
      * Reacts to PaymentSuccessfulEvent after transaction commit.
      */
     @TransactionalEventListener
-    public void handlePaymentSuccess(PaymentSuccessfulEvent event) {
-        // Load the order
+    public void handlePaymentSuccess(PaymentSuccessfulEvent event, Address shippingAddress) {
         Order order = orderRepository.findById(new Order.OrderId(event.orderId()))
                 .orElseThrow(() -> new IllegalArgumentException("Order not found: " + event.orderId()));
 
-        // Mark order as paid
         order.markPaid(event);
         orderRepository.save(order);
 
-        // Create a shipment
-        Address shippingAddress = order.getShippingAddress(); // assuming order holds address
-        Shipment shipment = shippingService.createShipment(order.id().value(), shippingAddress);
+        Shipment shipment = shippingService.createShipment(event.orderId(), shippingAddress);
 
-        // Mark order as shipped
         order.markShipped();
         orderRepository.save(order);
-
-        // Optionally, we could publish OrderShippedEvent here
-        // applicationEventPublisher.publishEvent(new OrderShippedEvent(...));
     }
 }
