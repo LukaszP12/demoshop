@@ -1,6 +1,6 @@
 package com.example.demoshop.domain.event;
 
-import com.example.demoshop.domain.model.User;
+import com.example.demoshop.domain.model.user.User;
 
 import java.time.Instant;
 

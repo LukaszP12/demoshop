@@ -1,4 +1,6 @@
-package com.example.demoshop.domain.model;
+package com.example.demoshop.domain.model.catalogue;
+
+import com.example.demoshop.domain.model.common.Money;
 
 import java.util.Objects;
 import java.util.UUID;

@@ -1,8 +1,8 @@
 package main.java.com.example.demoshop.domain.model;
 
-import com.example.demoshop.domain.model.Money;
-import com.example.demoshop.domain.model.Order;
-import com.example.demoshop.domain.model.OrderItem;
+import com.example.demoshop.domain.model.common.Money;
+import com.example.demoshop.domain.model.order.Order;
+import com.example.demoshop.domain.model.order.OrderItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

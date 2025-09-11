@@ -1,4 +1,4 @@
-package com.example.demoshop.domain.model;
+package com.example.demoshop.domain.model.user;
 
 import java.util.Objects;
 import java.util.UUID;
