@@ -4,25 +4,24 @@ import com.example.demoshop.domain.model.common.Money;
 import com.example.demoshop.domain.model.catalogue.Product;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Cart {
 
-    private final CartId id;
     private final String userId;
     private final Map<Product.ProductId, CartItem> items = new HashMap<>();
     private Instant lastUpdated;
 
     public Cart(String userId) {
-        this.id = CartId.newId();
         this.userId = userId;
         this.lastUpdated = Instant.now();
     }
 
-    public CartId id() { return id; }
     public String userId() { return userId; }
-    public Collection<CartItem> items() { return items.values(); }
     public Instant lastUpdated() { return lastUpdated; }
+    public Collection<CartItem> items() { return items.values(); }
 
     public void addProduct(Product product, int quantity) {
         CartItem item = items.get(product.id());
@@ -51,5 +50,21 @@ public class Cart {
         return items.values().stream()
                 .map(CartItem::subtotal)
                 .reduce(Money.zero(), Money::add);
+    }
+
+    // --- Restoration methods for snapshots ---
+    void restoreItem(CartItem item) {
+        items.put(item.productId(), item);
+    }
+
+    void restoreLastUpdated(Instant lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public static Cart fromSnapshot(CartSnapshot snapshot) {
+        Cart cart = new Cart(snapshot.userId());
+        snapshot.items().forEach(cart::restoreItem);
+        cart.restoreLastUpdated(snapshot.lastUpdated());
+        return cart;
     }
 }
