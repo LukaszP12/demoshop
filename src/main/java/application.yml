@@ -1,2 +1,17 @@
 spring.data.mongodb.uri=mongodb://localhost:27017/demoshop
 spring.data.mongodb.database=demoshop
+
+spring.rabbitmq.host=localhost
+spring.rabbitmq.port=5672
+spring.rabbitmq.username=guest
+spring.rabbitmq.password=guest
+  
+  # Optional: define queues
+coupon.queue.name=coupon-events
+order.queue.name=order-events
+review.queue.name=review-events
+
+spring.rabbitmq.host=localhost
+spring.rabbitmq.port=5672
+spring.rabbitmq.username=guest
+spring.rabbitmq.password=guest
