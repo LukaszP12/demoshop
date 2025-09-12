@@ -1,4 +1,5 @@
-package com.example.demoshop.domain.model.common;
+package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common;
+
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -7,7 +8,7 @@ public final class Money {
 
     private final BigDecimal amount;
 
-    private Money(BigDecimal amount) {
+    public Money(BigDecimal amount) {
         this.amount = amount;
     }
 
@@ -25,6 +26,19 @@ public final class Money {
 
     public Money multiply(int factor) {
         return new Money(this.amount.multiply(BigDecimal.valueOf(factor)));
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public Money applyDiscount(BigDecimal discountValue, boolean percentage) {
+        BigDecimal discount = percentage
+                ? this.amount.multiply(discountValue).divide(BigDecimal.valueOf(100))
+                : discountValue;
+
+        BigDecimal newAmount = this.amount.subtract(discount).max(BigDecimal.ZERO);
+        return new Money(newAmount);
     }
 
     @Override
