@@ -1,30 +1,20 @@
-package com.example.demoshop.domain.model.catalogue;
-
-import java.util.Objects;
+package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue;
 
 public class ProductVariant {
+    private String sku;   // unique stock keeping unit
+    private String size;
+    private String color;
+    private int stockQuantity;
 
-    private final String color;
-    private final String size;
-
-    public ProductVariant(String color, String size) {
-        this.color = color;
+    public ProductVariant(String sku, String size, String color, int stockQuantity) {
+        this.sku = sku;
         this.size = size;
+        this.color = color;
+        this.stockQuantity = stockQuantity;
     }
 
-    public String color() { return color; }
-    public String size() { return size; }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ProductVariant)) return false;
-        ProductVariant that = (ProductVariant) o;
-        return Objects.equals(color, that.color) && Objects.equals(size, that.size);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(color, size);
-    }
+    public String getSku() { return sku; }
+    public String getSize() { return size; }
+    public String getColor() { return color; }
+    public int getStockQuantity() { return stockQuantity; }
 }

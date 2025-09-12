@@ -1,16 +1,22 @@
-package com.example.demoshop.domain.model.catalogue;
+package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue;
 
-import com.example.demoshop.domain.model.common.Money;
+
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Document(collection = "products")
 public class Product {
 
+    @Id
     private final ProductId id;
     private final String name;
     private final Money price;
-    private final int stock;
+    private int stock;
     private final Set<Category> categories = new HashSet<>();
     private final Set<ProductVariant> variants = new HashSet<>();
     private final Set<ProductReview> reviews = new HashSet<>();
@@ -48,5 +54,9 @@ public class Product {
 
     public double averageRating() {
         return reviews.stream().mapToInt(ProductReview::rating).average().orElse(0);
+    }
+
+    public void increaseStock(int amount) {
+        this.stock += amount;
     }
 }

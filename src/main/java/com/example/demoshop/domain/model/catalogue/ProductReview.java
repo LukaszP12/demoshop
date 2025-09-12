@@ -1,4 +1,4 @@
-package com.example.demoshop.domain.model.catalogue;
+package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue;
 
 import java.time.Instant;
 
