@@ -1,4 +1,4 @@
-package com.example.demoshop;
+package main.java.com.example.demoshop.java.com.example.demoshop;
 
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.boot.SpringApplication;
