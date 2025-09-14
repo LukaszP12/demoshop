@@ -1,4 +1,4 @@
-package com.example.demoshop.domain.model.user;
+package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user;
 
 import java.util.Objects;
 

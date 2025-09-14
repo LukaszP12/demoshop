@@ -1,6 +1,5 @@
-package com.example.demoshop.domain.event;
+package main.java.com.example.demoshop.java.com.example.demoshop.domain.event;
 
-import com.example.demoshop.domain.model.catalogue.Product;
 
 import java.time.Instant;
 

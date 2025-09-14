@@ -1,6 +1,6 @@
-package com.example.demoshop.domain.model.cart;
+package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart;
 
-import com.example.demoshop.domain.model.common.Money;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 
 import java.time.Instant;
 import java.util.Collections;

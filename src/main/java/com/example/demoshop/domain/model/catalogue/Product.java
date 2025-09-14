@@ -1,6 +1,5 @@
 package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue;
 
-
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 
 import org.springframework.data.annotation.Id;
@@ -25,6 +24,26 @@ public class Product {
         this.id = ProductId.newId();
         this.name = name;
         this.price = price;
+        this.stock = stock;
+    }
+
+    public ProductId getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Money getPrice() {
+        return price;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
         this.stock = stock;
     }
 

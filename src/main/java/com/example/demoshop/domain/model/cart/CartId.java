@@ -1,4 +1,4 @@
-package com.example.demoshop.domain.model.cart;
+package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart;
 
 import java.util.UUID;
 

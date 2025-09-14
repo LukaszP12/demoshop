@@ -1,4 +1,4 @@
-package com.example.demoshop.domain.repository;
+package main.java.com.example.demoshop.java.com.example.demoshop.domain.repository;
 
 import com.example.demoshop.domain.model.user.User;
 

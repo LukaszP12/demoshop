@@ -1,7 +1,8 @@
-package com.example.demoshop.domain.model.cart;
+package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart;
 
-import com.example.demoshop.domain.model.common.Money;
-import com.example.demoshop.domain.model.catalogue.Product;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.Product;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductId;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -11,7 +12,7 @@ import java.util.Map;
 public class Cart {
 
     private final String userId;
-    private final Map<Product.ProductId, CartItem> items = new HashMap<>();
+    private final Map<ProductId, CartItem> items = new HashMap<>();
     private Instant lastUpdated;
 
     public Cart(String userId) {
@@ -24,16 +25,16 @@ public class Cart {
     public Collection<CartItem> items() { return items.values(); }
 
     public void addProduct(Product product, int quantity) {
-        CartItem item = items.get(product.id());
+        CartItem item = items.get(product.getId());
         if (item != null) {
             item.increaseQuantity(quantity);
         } else {
-            items.put(product.id(), new CartItem(product, quantity));
+            items.put(product.getId(), new CartItem(product, quantity));
         }
         touch();
     }
 
-    public void removeProduct(Product.ProductId productId) {
+    public void removeProduct(ProductId productId) {
         items.remove(productId);
         touch();
     }

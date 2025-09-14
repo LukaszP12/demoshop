@@ -1,6 +1,6 @@
-package com.example.demoshop.domain.model.order;
+package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order;
 
-import com.example.demoshop.domain.model.common.Money;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 
 import java.util.Objects;
 

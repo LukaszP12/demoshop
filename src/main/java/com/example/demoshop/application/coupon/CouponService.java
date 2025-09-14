@@ -4,7 +4,6 @@ import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.Cou
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.coupon.Coupon;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CouponRepository;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 
