@@ -5,7 +5,7 @@ import java.util.UUID;
 public class CartId {
     private final String value;
 
-    private CartId(String value) { this.value = value; }
+    public CartId(String value) { this.value = value; }
 
     public static CartId newId() { return new CartId(UUID.randomUUID().toString()); }
 
