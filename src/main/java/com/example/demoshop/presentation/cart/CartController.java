@@ -6,8 +6,10 @@ import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.car
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -35,5 +37,12 @@ public class CartController {
     @PostMapping("/{userId}/items")
     public void addItemToCart(@PathVariable String userId, @RequestBody CartItem item) {
         cartService.addItem(userId, item);
+    }
+
+    @PutMapping("/{userId}/items/{productId}")
+    public void update(@PathVariable String userId,
+                       @PathVariable String productId,
+                       @RequestParam int quantity){
+        cartService.updateItemQuantity(userId,productId, quantity);
     }
 }

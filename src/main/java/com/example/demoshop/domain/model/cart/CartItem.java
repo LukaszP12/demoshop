@@ -31,6 +31,10 @@ public class CartItem {
         this.quantity += amount;
     }
 
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
     public Money subtotal() {
         return unitPrice.multiply(quantity);
     }

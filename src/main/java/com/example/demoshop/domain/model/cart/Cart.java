@@ -53,6 +53,13 @@ public class Cart {
                 .reduce(Money.zero(), Money::add);
     }
 
+    public void addItem(CartItem item) {
+        items.merge(item.productId(), item, (existing, incoming) -> {
+            existing.setQuantity(existing.quantity() + incoming.quantity());
+            return existing;
+        });
+    }
+
     // --- Restoration methods for snapshots ---
     void restoreItem(CartItem item) {
         items.put(item.productId(), item);
@@ -68,4 +75,5 @@ public class Cart {
         cart.restoreLastUpdated(snapshot.lastUpdated());
         return cart;
     }
+
 }
