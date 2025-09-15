@@ -34,7 +34,7 @@ public class Cart {
         touch();
     }
 
-    public void removeProduct(ProductId productId) {
+    public void removeItem(ProductId productId) {
         items.remove(productId);
         touch();
     }
@@ -76,4 +76,7 @@ public class Cart {
         return cart;
     }
 
+    public void clearItems() {
+        items.clear();
+    }
 }
