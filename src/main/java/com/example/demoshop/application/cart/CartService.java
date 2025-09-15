@@ -19,6 +19,13 @@ public class CartService {
         this.cartRepository = cartRepository;
     }
 
+    public Cart getCart(String userId){
+        Cart cart = cartRepository.findById(new CartId(userId)).orElseThrow(
+                () -> new RuntimeException("Cart with id: " + userId + " not found.")
+        );
+        return cart;
+    }
+
     public List<Cart> getAllCarts() {
         return cartRepository.findAll().stream()
                 .filter(cart -> !cart.isExpired(expirationSeconds))

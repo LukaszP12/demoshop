@@ -27,6 +27,11 @@ public class CartController {
         return cartService.getAllCarts();
     }
 
+    @GetMapping("/{userId}")
+    public Cart getCart(@PathVariable String userId) {
+        return cartService.getCart(userId); // returns active cart or empty cart
+    }
+
     @PostMapping("/{userId}/items")
     public void addItemToCart(@PathVariable String userId, @RequestBody CartItem item) {
         cartService.addItem(userId, item);
