@@ -75,4 +75,8 @@ public class Cart {
         cart.restoreLastUpdated(snapshot.lastUpdated());
         return cart;
     }
+
+    public void clearItems() {
+        items.clear();
+    }
 }
