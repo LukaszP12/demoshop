@@ -70,4 +70,13 @@ public class CartService {
 
         cartRepository.save(cart);
     }
+
+    public void removeItem(String cartId, String productId){
+        Cart cart = cartRepository.findById(new CartId(cartId))
+                .filter(c -> !c.isExpired(expirationSeconds))
+                .orElseThrow(() -> new RuntimeException("Cart not found or expired: " + cartId));
+
+        cart.removeItem(new ProductId(productId));
+        cartRepository.save(cart);
+    }
 }

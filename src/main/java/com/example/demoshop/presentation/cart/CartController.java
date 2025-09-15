@@ -3,6 +3,7 @@ package main.java.com.example.demoshop.java.com.example.demoshop.presentation.ca
 import main.java.com.example.demoshop.java.com.example.demoshop.application.cart.CartService;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.Cart;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.CartItem;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,5 +45,10 @@ public class CartController {
                        @PathVariable String productId,
                        @RequestParam int quantity){
         cartService.updateItemQuantity(userId,productId, quantity);
+    }
+
+    @DeleteMapping("/{cartId}/items/{productId}")
+    public void removeItem(@PathVariable String cartId, @PathVariable String productId) {
+        cartService.removeItem(cartId, productId);
     }
 }
