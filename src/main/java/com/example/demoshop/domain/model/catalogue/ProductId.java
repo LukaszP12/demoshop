@@ -7,7 +7,7 @@ public class ProductId {
 
     private final String id;
 
-    private ProductId(String id) {
+    public ProductId(String id) {
         this.id = id;
     }
 
