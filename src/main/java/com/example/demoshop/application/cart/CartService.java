@@ -5,8 +5,10 @@ import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.car
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.CartItem;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.Product;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductId;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CartRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.ProductRepository;
+import main.java.com.example.demoshop.java.com.example.demoshop.presentation.cart.dto.CartSummary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -87,5 +89,21 @@ public class CartService {
 
         cart.clearItems();
         cartRepository.save(cart);
+    }
+
+    public CartSummary getCartSummary(String cartId) {
+        Cart cart = cartRepository.findById(new CartId(cartId))
+                .filter(c -> !c.isExpired(expirationSeconds))
+                .orElseThrow(() -> new RuntimeException("Cart not found or expired: " + cartId));
+
+        int totalItems = cart.items().stream()
+                .mapToInt(CartItem::quantity)
+                .sum();
+
+        Money totalPrice = cart.items().stream()
+                .map(item -> item.unitPrice().multiply(item.quantity()))
+                .reduce(Money.zero(), Money::add);
+
+        return new CartSummary(totalItems,totalPrice.getAmount().doubleValue());
     }
 }

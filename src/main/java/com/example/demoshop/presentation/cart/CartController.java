@@ -3,6 +3,7 @@ package main.java.com.example.demoshop.java.com.example.demoshop.presentation.ca
 import main.java.com.example.demoshop.java.com.example.demoshop.application.cart.CartService;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.Cart;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.CartItem;
+import main.java.com.example.demoshop.java.com.example.demoshop.presentation.cart.dto.CartSummary;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,8 +44,8 @@ public class CartController {
     @PutMapping("/{userId}/items/{productId}")
     public void update(@PathVariable String userId,
                        @PathVariable String productId,
-                       @RequestParam int quantity){
-        cartService.updateItemQuantity(userId,productId, quantity);
+                       @RequestParam int quantity) {
+        cartService.updateItemQuantity(userId, productId, quantity);
     }
 
     @DeleteMapping("/{cartId}/items/{productId}")
@@ -56,4 +57,15 @@ public class CartController {
     public void clearCart(@PathVariable String cartId) {
         cartService.clearCart(cartId);
     }
+
+    // toDo
+
+    //    GET /api/carts/{userId}/summary (summary)
+    @GetMapping("/{cartId}/summary")
+    public CartSummary getCartSummary(@PathVariable String cartId) {
+        return cartService.getCartSummary(cartId);
+    }
+
+//    POST /api/carts/{userId}/checkout (checkout)
+
 }
