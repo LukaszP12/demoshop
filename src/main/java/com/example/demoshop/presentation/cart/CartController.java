@@ -3,6 +3,7 @@ package main.java.com.example.demoshop.java.com.example.demoshop.presentation.ca
 import main.java.com.example.demoshop.java.com.example.demoshop.application.cart.CartService;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.Cart;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.CartItem;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
 import main.java.com.example.demoshop.java.com.example.demoshop.presentation.cart.dto.CartSummary;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,14 +59,13 @@ public class CartController {
         cartService.clearCart(cartId);
     }
 
-    // toDo
-
-    //    GET /api/carts/{userId}/summary (summary)
     @GetMapping("/{cartId}/summary")
     public CartSummary getCartSummary(@PathVariable String cartId) {
         return cartService.getCartSummary(cartId);
     }
 
-//    POST /api/carts/{userId}/checkout (checkout)
-
+    @PostMapping("/{cartId}/checkout")
+    public Order checkout(@PathVariable String cartId) {
+        return cartService.checkout(cartId);
+    }
 }

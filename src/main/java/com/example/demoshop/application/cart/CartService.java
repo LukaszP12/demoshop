@@ -1,11 +1,13 @@
 package main.java.com.example.demoshop.java.com.example.demoshop.application.cart;
 
+import main.java.com.example.demoshop.java.com.example.demoshop.application.order.OrderWorkflowService;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.Cart;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.CartId;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.CartItem;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.Product;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductId;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CartRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.ProductRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.presentation.cart.dto.CartSummary;
@@ -17,11 +19,15 @@ import java.util.List;
 public class CartService {
 
     private final CartRepository cartRepository;
+    private final OrderWorkflowService orderService;
     private final ProductRepository productRepository;
     private final long expirationSeconds = 24 * 60 * 60; // 24 hours
 
-    public CartService(CartRepository cartRepository, ProductRepository productRepository) {
+    public CartService(CartRepository cartRepository,
+                       OrderWorkflowService orderService,
+                       ProductRepository productRepository) {
         this.cartRepository = cartRepository;
+        this.orderService = orderService;
         this.productRepository = productRepository;
     }
 
@@ -105,5 +111,18 @@ public class CartService {
                 .reduce(Money.zero(), Money::add);
 
         return new CartSummary(totalItems,totalPrice.getAmount().doubleValue());
+    }
+
+    public Order checkout(String cartId) {
+        Cart cart = cartRepository.findById(new CartId(cartId))
+                .filter(c -> !c.isExpired(expirationSeconds))
+                .orElseThrow(() -> new RuntimeException("Cart not found or expired: " + cartId));
+
+        Order order = orderService.createOrderFromCart(cart);
+
+        cart.clearItems();
+        cartRepository.save(cart);
+
+        return order;
     }
 }

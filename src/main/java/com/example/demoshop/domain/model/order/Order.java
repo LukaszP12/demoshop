@@ -16,6 +16,16 @@ public class Order {
     private Money total;
     private Coupon appliedCoupon;
 
+    // Constructor for OrderWorkflowService usage
+    public Order(String userId, Collection<OrderItem> items) {
+        this.id = OrderId.newId(); // generate a new OrderId
+        this.userId = userId;
+        this.items.addAll(items);
+        this.status = OrderStatus.CREATED;
+        this.shippingAddress = null; // can be set later or default
+        this.total = calculateTotal();
+    }
+
     public Order(OrderId id, String userId, List<OrderItem> items, Address shippingAddress) {
         this.id = id;
         this.userId = userId;
