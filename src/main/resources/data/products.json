@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Jack Daniel's Whiskey",
+    "type": "Whiskey",
+    "brand": "Jack Daniel's",
+    "price": 35.99,
+    "volume_ml": 700,
+    "stock": 50,
+    "description": "Classic Tennessee whiskey with a smooth taste."
+  },
+  {
+    "name": "Absolut Vodka",
+    "type": "Vodka",
+    "brand": "Absolut",
+    "price": 25.50,
+    "volume_ml": 700,
+    "stock": 60,
+    "description": "Premium Swedish vodka, crisp and clean."
+  },
+  {
+    "name": "Heineken Beer",
+    "type": "Beer",
+    "brand": "Heineken",
+    "price": 2.50,
+    "volume_ml": 330,
+    "stock": 200,
+    "description": "Refreshing Dutch lager with mild bitterness."
+  },
+  {
+    "name": "Baileys Irish Cream",
+    "type": "Liqueur",
+    "brand": "Baileys",
+    "price": 30.00,
+    "volume_ml": 700,
+    "stock": 40,
+    "description": "Creamy Irish liqueur perfect for cocktails or sipping."
+  },
+  {
+    "name": "Jameson Irish Whiskey",
+    "type": "Whiskey",
+    "brand": "Jameson",
+    "price": 32.00,
+    "volume_ml": 700,
+    "stock": 45,
+    "description": "Smooth triple-distilled Irish whiskey."
+  }
+]
