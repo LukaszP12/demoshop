@@ -31,13 +31,13 @@ public class OrderWorkflowService {
      */
     @TransactionalEventListener
     public void handlePaymentSuccess(PaymentSuccessfulEvent event, Address shippingAddress) {
-        Order order = orderRepository.findById(new Order.OrderId(event.orderId()))
+        Order order = orderRepository.findById(new Order.OrderId(event.orderId().value()))
                 .orElseThrow(() -> new IllegalArgumentException("Order not found: " + event.orderId()));
 
         order.markPaid(event);
         orderRepository.save(order);
 
-        Shipment shipment = shippingService.createShipment(event.orderId(), shippingAddress);
+        Shipment shipment = shippingService.createShipment(event.orderId().value(), shippingAddress);
 
         order.markShipped();
         orderRepository.save(order);
@@ -60,5 +60,15 @@ public class OrderWorkflowService {
         orderRepository.save(order);
 
         return order;
+    }
+
+    public Order payOrder(String orderId) {
+        Order order = orderRepository.findById(new Order.OrderId(orderId))
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        PaymentSuccessfulEvent paymentEvent = new PaymentSuccessfulEvent(new Order.OrderId(orderId), order.total());
+
+        order.markPaid(paymentEvent);
+        return orderRepository.save(order);
     }
 }
