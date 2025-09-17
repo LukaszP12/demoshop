@@ -1,9 +1,12 @@
 package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order;
+
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.PaymentSuccessfulEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.coupon.Coupon;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.Address;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 
 public class Order {
@@ -15,6 +18,8 @@ public class Order {
     private final Address shippingAddress;
     private Money total;
     private Coupon appliedCoupon;
+
+    private final Instant createdAt = Instant.now();
 
     // Constructor for OrderWorkflowService usage
     public Order(String userId, Collection<OrderItem> items) {
@@ -75,12 +80,12 @@ public class Order {
 
     public void place() {
         if (items.isEmpty()) throw new IllegalStateException("Cannot place order without items");
-        status = OrderStatus.PLACED;
+        status = OrderStatus.CREATED;
     }
 
     public void markPaid(PaymentSuccessfulEvent event) {
-        if (this.status != OrderStatus.PENDING_PAYMENT) {
-            throw new IllegalStateException("Order cannot be paid in status: " + status);
+        if (this.status != OrderStatus.CREATED) {
+            throw new IllegalStateException("Only CREATED orders can be paid.");
         }
         this.status = OrderStatus.PAID;
     }
@@ -92,28 +97,82 @@ public class Order {
         this.status = OrderStatus.SHIPPED;
     }
 
+    public void markDelivered() {
+        if (status != OrderStatus.SHIPPED) {
+            throw new IllegalStateException("Only SHIPPED orders can be delivered.");
+        }
+        this.status = OrderStatus.DELIVERED;
+    }
+
+    public void markReturned() {
+        if (status != OrderStatus.DELIVERED) {
+            throw new IllegalStateException("Only DELIVERED orders can be returned.");
+        }
+        this.status = OrderStatus.RETURNED;
+    }
+
+    public void cancel(Duration allowedDuration) {
+        if (Duration.between(createdAt, Instant.now()).compareTo(allowedDuration) > 0) {
+            throw new IllegalStateException("Order can no longer be cancelled.");
+        }
+        if (status != OrderStatus.CREATED && status != OrderStatus.PAID) {
+            throw new IllegalStateException("Only CREATED or PAID orders can be cancelled.");
+        }
+        this.status = OrderStatus.CANCELLED;
+    }
+
+    public void requestReturn() {
+        if (status != OrderStatus.DELIVERED) {
+            throw new IllegalStateException("Only delivered orders can be returned.");
+        }
+        this.status = OrderStatus.RETURNED;
+        // optionally refund
+        this.total = Money.zero();
+    }
+
     // --- Getters ---
 
-    public Address getShippingAddress() { return shippingAddress; }
+    public Address getShippingAddress() {
+        return shippingAddress;
+    }
 
-    public OrderId id() { return id; }
+    public OrderId id() {
+        return id;
+    }
 
-    public List<OrderItem> items() { return Collections.unmodifiableList(items); }
+    public List<OrderItem> items() {
+        return Collections.unmodifiableList(items);
+    }
 
-    public OrderStatus status() { return status; }
+    public OrderStatus status() {
+        return status;
+    }
 
-    public Money total() { return total; }
+    public Money total() {
+        return total;
+    }
 
-    public Optional<Coupon> appliedCoupon() { return Optional.ofNullable(appliedCoupon); }
+    public Optional<Coupon> appliedCoupon() {
+        return Optional.ofNullable(appliedCoupon);
+    }
 
     // --- Types ---
 
-    public enum OrderStatus { CREATED, PLACED, PENDING_PAYMENT, PAID, SHIPPED }
+    public enum OrderStatus {CREATED, PAID, SHIPPED, DELIVERED, RETURNED, CANCELLED}
 
     public static class OrderId {
         private final String value;
-        public OrderId(String value) { this.value = value; }
-        public static OrderId newId() { return new OrderId(UUID.randomUUID().toString()); }
-        public String value() { return value; }
+
+        public OrderId(String value) {
+            this.value = value;
+        }
+
+        public static OrderId newId() {
+            return new OrderId(UUID.randomUUID().toString());
+        }
+
+        public String value() {
+            return value;
+        }
     }
 }
