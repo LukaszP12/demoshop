@@ -49,7 +49,9 @@ public class OrderWorkflowService {
         }
 
         List<OrderItem> orderItems = cart.items().stream()
-                .map(item -> new OrderItem(item.productId().value(), item.quantity(), item.unitPrice()))
+                .map(cartItem -> new OrderItem(cartItem.productId().value(),
+                        cartItem.quantity(),
+                        cartItem.unitPrice()))
                 .toList();
 
         Order order = new Order(cart.userId(),
