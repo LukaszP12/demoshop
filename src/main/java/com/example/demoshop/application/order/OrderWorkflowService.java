@@ -2,6 +2,7 @@ package main.java.com.example.demoshop.java.com.example.demoshop.application.ord
 
 
 import main.java.com.example.demoshop.java.com.example.demoshop.application.shipping.ShippingService;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderShippedEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.PaymentSuccessfulEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.Cart;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
@@ -69,6 +70,16 @@ public class OrderWorkflowService {
         PaymentSuccessfulEvent paymentEvent = new PaymentSuccessfulEvent(new Order.OrderId(orderId), order.total());
 
         order.markPaid(paymentEvent);
+        return orderRepository.save(order);
+    }
+
+    public Order shipOrder(String orderId) {
+        Order order = orderRepository.findById(new Order.OrderId(orderId))
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        OrderShippedEvent orderShippedEvent = new OrderShippedEvent(orderId);
+        order.markShipped(orderShippedEvent);
+
         return orderRepository.save(order);
     }
 }
