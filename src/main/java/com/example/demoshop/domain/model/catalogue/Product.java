@@ -1,81 +1,50 @@
 package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.HashSet;
-import java.util.Set;
 
 @Document(collection = "products")
 public class Product {
 
     @Id
-    private final ProductId id;
-    private final String name;
-    private final Money price;
+    private String id;
+    private String name;
+    private String type;
+    private String brand;
+    private double price;
+    private int volume_ml;
     private int stock;
-    private final Set<Category> categories = new HashSet<>();
-    private final Set<ProductVariant> variants = new HashSet<>();
-    private final Set<ProductReview> reviews = new HashSet<>();
+    private String description;
 
-    public Product(String name, Money price, int stock) {
-        this.id = ProductId.newId();
+    public Product() {}
+
+    public Product(String name, String type, String brand, double price, int volume_ml, int stock, String description) {
         this.name = name;
+        this.type = type;
+        this.brand = brand;
         this.price = price;
+        this.volume_ml = volume_ml;
         this.stock = stock;
+        this.description = description;
     }
 
-    public ProductId getId() {
-        return id;
-    }
+    // Getters and setters
+    public String getId() { return id; }
+    public String getName() { return name; }
+    public String getType() { return type; }
+    public String getBrand() { return brand; }
+    public double getPrice() { return price; }
+    public int getVolume_ml() { return volume_ml; }
+    public int getStock() { return stock; }
+    public String getDescription() { return description; }
 
-    public String getName() {
-        return name;
-    }
-
-    public Money getPrice() {
-        return price;
-    }
-
-    public int getStock() {
-        return stock;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
-
-    public void addVariant(ProductVariant variant) {
-        variants.add(variant);
-    }
-
-    public Set<ProductVariant> variants() {
-        return Set.copyOf(variants);
-    }
-
-    public void addCategory(Category category) {
-        categories.add(category);
-    }
-
-    public Set<Category> categories() {
-        return Set.copyOf(categories);
-    }
-
-    public void addReview(ProductReview review) {
-        reviews.add(review);
-    }
-
-    public Set<ProductReview> reviews() {
-        return Set.copyOf(reviews);
-    }
-
-    public double averageRating() {
-        return reviews.stream().mapToInt(ProductReview::rating).average().orElse(0);
-    }
-
-    public void increaseStock(int amount) {
-        this.stock += amount;
-    }
+    public void setId(String id) { this.id = id; }
+    public void setName(String name) { this.name = name; }
+    public void setType(String type) { this.type = type; }
+    public void setBrand(String brand) { this.brand = brand; }
+    public void setPrice(double price) { this.price = price; }
+    public void setVolume_ml(int volume_ml) { this.volume_ml = volume_ml; }
+    public void setStock(int stock) { this.stock = stock; }
+    public void setDescription(String description) { this.description = description; }
 }
