@@ -29,6 +29,11 @@ public class WishlistController {
         return wishlistService.addProduct(userId, productId);
     }
 
+    @PostMapping("/{userId}/move-to-cart/{productId}")
+    public void moveToCart(@PathVariable String userId, @PathVariable String productId) {
+        wishlistService.moveToCart(userId, productId);
+    }
+
     @DeleteMapping("/{userId}/items/{productId}")
     public Wishlist removeProduct(@PathVariable String userId, @PathVariable String productId) {
         return wishlistService.removeProduct(userId, productId);
