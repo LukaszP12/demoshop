@@ -3,6 +3,7 @@ package main.java.com.example.demoshop.java.com.example.demoshop.application.ord
 
 import main.java.com.example.demoshop.java.com.example.demoshop.application.shipping.ShippingService;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderDeliveredEvent;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderReturnedEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderShippedEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.PaymentSuccessfulEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.Cart;
@@ -90,6 +91,16 @@ public class OrderWorkflowService {
 
         OrderDeliveredEvent deliveredEvent = new OrderDeliveredEvent(orderId);
         order.markDelivered(deliveredEvent);
+
+        return orderRepository.save(order);
+    }
+
+    public Order requestReturn(String orderId) {
+        Order order = orderRepository.findById(new Order.OrderId(orderId))
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        OrderReturnedEvent returnedEvent = new OrderReturnedEvent(orderId);
+        order.markReturned(returnedEvent);
 
         return orderRepository.save(order);
     }

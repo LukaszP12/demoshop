@@ -1,6 +1,7 @@
 package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order;
 
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderDeliveredEvent;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderReturnedEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderShippedEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.PaymentSuccessfulEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
@@ -139,7 +140,17 @@ public class Order {
         this.total = Money.zero();
     }
 
-    // --- Getters ---
+    public void markReturned(OrderReturnedEvent event) {
+        if (!this.id.equals(new OrderId(event.getOrderId()))){
+            throw new IllegalArgumentException("Event does not belong to this order");
+        }
+        if (status != OrderStatus.DELIVERED){
+            throw new IllegalArgumentException("Only DELIVERED orders can be returned.");
+        }
+        this.status = OrderStatus.RETURNED;
+    }
+
+        // --- Getters ---
 
     public Address getShippingAddress() {
         return shippingAddress;
