@@ -104,4 +104,12 @@ public class OrderWorkflowService {
 
         return orderRepository.save(order);
     }
+
+    public Order cancelOrder(String orderId) {
+        Order order = orderRepository.findById(new Order.OrderId(orderId))
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        order.cancel();
+        return orderRepository.save(order);
+    }
 }

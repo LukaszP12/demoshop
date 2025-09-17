@@ -150,6 +150,13 @@ public class Order {
         this.status = OrderStatus.RETURNED;
     }
 
+    public void cancel() {
+        if (status == OrderStatus.SHIPPED || status == OrderStatus.DELIVERED || status == OrderStatus.RETURNED) {
+            throw new IllegalStateException("Order cannot be cancelled after it has been shipped or delivered.");
+        }
+        this.status = OrderStatus.CANCELLED;
+    }
+
         // --- Getters ---
 
     public Address getShippingAddress() {
