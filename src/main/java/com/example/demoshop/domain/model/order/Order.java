@@ -1,5 +1,6 @@
 package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order;
 
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderShippedEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.PaymentSuccessfulEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.coupon.Coupon;
@@ -90,7 +91,10 @@ public class Order {
         this.status = OrderStatus.PAID;
     }
 
-    public void markShipped() {
+    public void markShipped(OrderShippedEvent event) {
+        if (!this.id.equals(new OrderId(event.orderId()))) {
+            throw new IllegalArgumentException("Event does not belong to this order");
+        }
         if (this.status != OrderStatus.PAID) {
             throw new IllegalStateException("Only paid orders can be shipped.");
         }

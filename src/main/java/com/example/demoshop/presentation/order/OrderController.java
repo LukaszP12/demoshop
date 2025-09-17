@@ -23,4 +23,10 @@ public class OrderController {
         Order updatedOrder = orderService.payOrder(orderId);
         return ResponseEntity.ok(updatedOrder);
     }
+
+    @PostMapping("/{orderId}/ship")
+    public ResponseEntity<Order> shipOrder(@PathVariable String orderId){
+        Order updatedOrder = orderService.shipOrder(orderId);
+        return ResponseEntity.ok(updatedOrder);
+    }
 }
