@@ -25,8 +25,14 @@ public class OrderController {
     }
 
     @PostMapping("/{orderId}/ship")
-    public ResponseEntity<Order> shipOrder(@PathVariable String orderId){
+    public ResponseEntity<Order> shipOrder(@PathVariable String orderId) {
         Order updatedOrder = orderService.shipOrder(orderId);
+        return ResponseEntity.ok(updatedOrder);
+    }
+
+    @PostMapping("/{orderId}/deliver")
+    public ResponseEntity<Order> deliverOrder(@PathVariable String orderId) {
+        Order updatedOrder = orderService.deliverOrder(orderId);
         return ResponseEntity.ok(updatedOrder);
     }
 }

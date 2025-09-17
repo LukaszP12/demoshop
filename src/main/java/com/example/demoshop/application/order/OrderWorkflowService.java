@@ -2,6 +2,8 @@ package main.java.com.example.demoshop.java.com.example.demoshop.application.ord
 
 
 import main.java.com.example.demoshop.java.com.example.demoshop.application.shipping.ShippingService;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderDeliveredEvent;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderReturnedEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderShippedEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.PaymentSuccessfulEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.Cart;
@@ -45,7 +47,7 @@ public class OrderWorkflowService {
     }
 
     public Order createOrderFromCart(Cart cart) {
-        if (cart.items().isEmpty()){
+        if (cart.items().isEmpty()) {
             throw new IllegalArgumentException("Cannot create order from empty cart");
         }
 
@@ -79,6 +81,26 @@ public class OrderWorkflowService {
 
         OrderShippedEvent orderShippedEvent = new OrderShippedEvent(orderId);
         order.markShipped(orderShippedEvent);
+
+        return orderRepository.save(order);
+    }
+
+    public Order deliverOrder(String orderId) {
+        Order order = orderRepository.findById(new Order.OrderId(orderId))
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        OrderDeliveredEvent deliveredEvent = new OrderDeliveredEvent(orderId);
+        order.markDelivered(deliveredEvent);
+
+        return orderRepository.save(order);
+    }
+
+    public Order requestReturn(String orderId) {
+        Order order = orderRepository.findById(new Order.OrderId(orderId))
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        OrderReturnedEvent returnedEvent = new OrderReturnedEvent(orderId);
+        order.markReturned(returnedEvent);
 
         return orderRepository.save(order);
     }
