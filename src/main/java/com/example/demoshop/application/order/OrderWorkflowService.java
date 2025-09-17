@@ -3,12 +3,16 @@ package main.java.com.example.demoshop.java.com.example.demoshop.application.ord
 
 import main.java.com.example.demoshop.java.com.example.demoshop.application.shipping.ShippingService;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.PaymentSuccessfulEvent;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.Cart;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.OrderItem;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.shipping.Shipment;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.Address;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;
+
+import java.util.List;
 
 @Service
 public class OrderWorkflowService {
@@ -37,5 +41,22 @@ public class OrderWorkflowService {
 
         order.markShipped();
         orderRepository.save(order);
+    }
+
+    public Order createOrderFromCart(Cart cart) {
+        if (cart.items().isEmpty()){
+            throw new IllegalArgumentException("Cannot create order from empty cart");
+        }
+
+        List<OrderItem> orderItems = cart.items().stream()
+                .map(item -> new OrderItem(item.productId().value(), item.quantity(), item.unitPrice()))
+                .toList();
+
+        Order order = new Order(cart.userId(),
+                orderItems);
+
+        orderRepository.save(order);
+
+        return order;
     }
 }
