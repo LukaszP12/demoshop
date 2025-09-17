@@ -1,4 +1,4 @@
-spring.data.mongodb.uri=mongodb://localhost:27017/demoshop
+spring.data.mongodb.uri=mongodb://admin:password@localhost:27017/demoshop
 spring.data.mongodb.database=demoshop
 
 spring.rabbitmq.host=localhost
