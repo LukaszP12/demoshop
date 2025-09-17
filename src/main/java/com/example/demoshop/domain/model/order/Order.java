@@ -7,11 +7,13 @@ import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.Pay
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.coupon.Coupon;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.Address;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
+@Document(collection = "orders")
 public class Order {
 
     private final OrderId id;
