@@ -3,6 +3,8 @@ package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.ca
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 
 @Document(collection = "products")
 public class Product {
@@ -16,10 +18,11 @@ public class Product {
     private int volume_ml;
     private int stock;
     private String description;
+    private List<ProductCategory> categories;
 
     public Product() {}
 
-    public Product(String name, String type, String brand, double price, int volume_ml, int stock, String description) {
+    public Product(String name, String type, String brand, double price, int volume_ml, int stock, String description, List<ProductCategory> categories) {
         this.name = name;
         this.type = type;
         this.brand = brand;
@@ -27,6 +30,13 @@ public class Product {
         this.volume_ml = volume_ml;
         this.stock = stock;
         this.description = description;
+        this.categories = categories;
+    }
+
+    public void addCategory(ProductCategory category){
+        if (!categories.contains(category)){
+            categories.add(category);
+        }
     }
 
     // Getters and setters
