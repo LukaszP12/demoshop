@@ -11,6 +11,7 @@ import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.ord
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.OrderItem;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.shipping.Shipment;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.Address;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CartRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -21,11 +22,14 @@ import java.util.List;
 public class OrderWorkflowService {
 
     private final OrderRepository orderRepository;
+    private final CartRepository cartRepository;
     private final ShippingService shippingService;
 
     public OrderWorkflowService(OrderRepository orderRepository,
+                                CartRepository cartRepository,
                                 ShippingService shippingService) {
         this.orderRepository = orderRepository;
+        this.cartRepository = cartRepository;
         this.shippingService = shippingService;
     }
 
@@ -46,7 +50,10 @@ public class OrderWorkflowService {
         orderRepository.save(order);
     }
 
-    public Order createOrderFromCart(Cart cart) {
+    public Order createOrderFromCart(String userId) {
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("User with id: " + userId + "not found"));
+
         if (cart.items().isEmpty()) {
             throw new IllegalArgumentException("Cannot create order from empty cart");
         }
@@ -111,5 +118,9 @@ public class OrderWorkflowService {
 
         order.cancel();
         return orderRepository.save(order);
+    }
+
+    public List<Order> listCustomerOrders(String customerId){
+        return orderRepository.findByUserId(customerId);
     }
 }
