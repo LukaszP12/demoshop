@@ -34,6 +34,17 @@ public class Product {
         this.categories = categories;
     }
 
+    public void decreaseStock(int quantity) {
+        if (quantity > stock) {
+            throw new IllegalStateException("Not enough stock for product " + name);
+        }
+        stock -= quantity;
+    }
+
+    public void increaseStock(int quantity) {
+        stock += quantity;
+    }
+
     public void addCategory(ProductCategory category) {
         if (!categories.contains(category)) {
             categories.add(category);

@@ -7,12 +7,14 @@ import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.Ord
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderShippedEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.PaymentSuccessfulEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.Cart;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.Product;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.OrderItem;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.shipping.Shipment;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.Address;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CartRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.OrderRepository;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -23,13 +25,16 @@ public class OrderWorkflowService {
 
     private final OrderRepository orderRepository;
     private final CartRepository cartRepository;
+    private final ProductRepository productRepository;
     private final ShippingService shippingService;
 
     public OrderWorkflowService(OrderRepository orderRepository,
                                 CartRepository cartRepository,
+                                ProductRepository productRepository,
                                 ShippingService shippingService) {
         this.orderRepository = orderRepository;
         this.cartRepository = cartRepository;
+        this.productRepository = productRepository;
         this.shippingService = shippingService;
     }
 
@@ -59,16 +64,29 @@ public class OrderWorkflowService {
         }
 
         List<OrderItem> orderItems = cart.items().stream()
-                .map(cartItem -> new OrderItem(cartItem.productId().value(),
+                .map(cartItem -> new OrderItem(
+                        cartItem.productId().value(),
                         cartItem.quantity(),
                         cartItem.unitPrice()))
                 .toList();
+
+        for (OrderItem orderItem : orderItems) {
+            Product product = productRepository.findById(orderItem.productId())
+                    .orElseThrow(() -> new IllegalArgumentException("Product with id: " + orderItem.productId() + " not found: "));
+
+            synchronized (product) {
+                if (product.getStock() < orderItem.quantity()) {
+                    throw new IllegalStateException("Not enough stock for product " + product.getName());
+                }
+                product.decreaseStock(orderItem.quantity());
+                productRepository.save(product);
+            }
+        }
 
         Order order = new Order(cart.userId(),
                 orderItems);
 
         orderRepository.save(order);
-
         return order;
     }
 
@@ -120,7 +138,7 @@ public class OrderWorkflowService {
         return orderRepository.save(order);
     }
 
-    public List<Order> listCustomerOrders(String customerId){
+    public List<Order> listCustomerOrders(String customerId) {
         return orderRepository.findByUserId(customerId);
     }
 }
