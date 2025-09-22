@@ -2,64 +2,71 @@ package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.co
 
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 public final class Money {
-
     private final BigDecimal amount;
+    private final String currency;
 
-    public Money(BigDecimal amount) {
-        this.amount = amount;
+    private Money(BigDecimal amount, String currency) {
+        if (amount == null || currency == null) {
+            throw new IllegalArgumentException("Amount and currency cannot be null");
+        }
+        this.amount = amount.setScale(2, RoundingMode.HALF_UP); // enforce cents precision
+        this.currency = currency;
     }
 
-    public static Money of(double value) {
-        return new Money(BigDecimal.valueOf(value));
-    }
-
-    public static Money zero() {
-        return new Money(BigDecimal.ZERO);
-    }
-
-    public Money add(Money other) {
-        return new Money(this.amount.add(other.amount));
-    }
-
-    public Money multiply(int factor) {
-        return new Money(this.amount.multiply(BigDecimal.valueOf(factor)));
+    public static Money of(BigDecimal amount, String currency) {
+        return new Money(amount, currency);
     }
 
     public BigDecimal getAmount() {
         return amount;
     }
 
-    public Money applyDiscount(BigDecimal discountValue, boolean percentage) {
-        BigDecimal discount = percentage
-                ? this.amount.multiply(discountValue).divide(BigDecimal.valueOf(100))
-                : discountValue;
+    public String getCurrency() {
+        return currency;
+    }
 
-        BigDecimal newAmount = this.amount.subtract(discount).max(BigDecimal.ZERO);
-        return new Money(newAmount);
+    public boolean isNegative() {
+        return amount.compareTo(BigDecimal.ZERO) < 0;
+    }
+
+    public Money add(Money other) {
+        checkCurrency(other);
+        return new Money(this.amount.add(other.amount), currency);
+    }
+
+    public Money subtract(Money other) {
+        checkCurrency(other);
+        return new Money(this.amount.subtract(other.amount), currency);
+    }
+
+    public Money multiply(BigDecimal factor) {
+        return new Money(this.amount.multiply(factor), currency);
+    }
+
+    private void checkCurrency(Money other) {
+        if (!this.currency.equals(other.currency)) {
+            throw new IllegalArgumentException("Currency mismatch: " + this.currency + " vs " + other.currency);
+        }
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Money money = (Money) o;
-        return amount.compareTo(money.amount) == 0;
+        if (!(o instanceof Money money)) return false;
+        return amount.equals(money.amount) && currency.equals(money.currency);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(amount);
+        return Objects.hash(amount, currency);
     }
 
     @Override
     public String toString() {
-        return amount.toPlainString();
-    }
-
-    public boolean isZeroOrNegative() {
-        return amount.compareTo(BigDecimal.ZERO) <= 0;
+        return amount + " " + currency;
     }
 }

@@ -8,16 +8,20 @@ import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.Ord
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.PaymentSuccessfulEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.Cart;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.Product;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.coupon.Coupon;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.OrderItem;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.shipping.Shipment;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.Address;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CartRepository;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CouponRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.OrderRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -27,15 +31,17 @@ public class OrderWorkflowService {
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final ShippingService shippingService;
+    private final CouponRepository couponRepository;
 
     public OrderWorkflowService(OrderRepository orderRepository,
                                 CartRepository cartRepository,
                                 ProductRepository productRepository,
-                                ShippingService shippingService) {
+                                ShippingService shippingService, CouponRepository couponRepository) {
         this.orderRepository = orderRepository;
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
         this.shippingService = shippingService;
+        this.couponRepository = couponRepository;
     }
 
     /**
@@ -55,7 +61,7 @@ public class OrderWorkflowService {
         orderRepository.save(order);
     }
 
-    public Order createOrderFromCart(String userId) {
+    public Order createOrderFromCart(String userId, String couponCode) {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("User with id: " + userId + "not found"));
 
@@ -83,10 +89,33 @@ public class OrderWorkflowService {
             }
         }
 
-        Order order = new Order(cart.userId(),
-                orderItems);
+        BigDecimal total = BigDecimal.ZERO;
 
+        for (OrderItem i : orderItems) {
+            Money product = i.getUnitPrice().multiply(i.quantity());
+            total.add(product.getAmount());
+        }
+
+        Coupon coupon = null;
+        if (couponCode != null && !couponCode.isBlank()) {
+            coupon = couponRepository.findByCode(couponCode)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid coupon code"));
+
+
+            if (!coupon.isValid()) {
+                throw new IllegalStateException("Coupon expired or usage limit reached");
+            }
+
+            total = coupon.applyToMoney(Money.from(total));
+            coupon.incrementUsage();
+            couponRepository.save(coupon);
+        }
+
+        Order order = new Order(userId, orderItems, total, coupon);
         orderRepository.save(order);
+
+        cartRepository.clearCart(userId);
+
         return order;
     }
 
