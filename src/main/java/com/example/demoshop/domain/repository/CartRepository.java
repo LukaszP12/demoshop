@@ -10,9 +10,11 @@ import java.util.Optional;
 public interface CartRepository {
 
     void save(Cart cart);                    // Add or update a cart
-    Optional<Cart> findById(CartId id);      // Find by cart id
+    Optional<Cart> findByUserId(CartId id);      // Find by cart id
     List<Cart> findAll();                     // Retrieve all carts
-    void delete(CartId id);                   // Remove cart by id
+//    void delete(CartId id);                   // Remove cart by id
 
     Optional<Cart> findByUserId(String userId);
+
+    void clearCart(String userId);
 }
