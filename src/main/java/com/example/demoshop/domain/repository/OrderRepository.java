@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OrderRepository {
-    void save(Order order);
+    Order save(Order order);
     void saveAll(List<Order> orders);
     long count();
     Optional<Order> findById(String id);

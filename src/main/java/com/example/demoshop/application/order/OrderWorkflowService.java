@@ -7,26 +7,42 @@ import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.Ord
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderShippedEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.PaymentSuccessfulEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.Cart;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.Product;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.coupon.Coupon;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.OrderItem;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.shipping.Shipment;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.Address;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CartRepository;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CouponRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.OrderRepository;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
 public class OrderWorkflowService {
 
     private final OrderRepository orderRepository;
+    private final CartRepository cartRepository;
+    private final ProductRepository productRepository;
     private final ShippingService shippingService;
+    private final CouponRepository couponRepository;
 
     public OrderWorkflowService(OrderRepository orderRepository,
-                                ShippingService shippingService) {
+                                CartRepository cartRepository,
+                                ProductRepository productRepository,
+                                ShippingService shippingService,
+                                CouponRepository couponRepository) {
         this.orderRepository = orderRepository;
+        this.cartRepository = cartRepository;
+        this.productRepository = productRepository;
         this.shippingService = shippingService;
+        this.couponRepository = couponRepository;
     }
 
     /**
@@ -42,31 +58,70 @@ public class OrderWorkflowService {
 
         Shipment shipment = shippingService.createShipment(event.orderId().value(), shippingAddress);
 
-        order.markShipped();
+        order.markShipped(order.getId());
         orderRepository.save(order);
     }
 
-    public Order createOrderFromCart(Cart cart) {
+    public Order createOrderFromCart(String userId, String couponCode) {
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("User with id: " + userId + "not found"));
+
         if (cart.items().isEmpty()) {
             throw new IllegalArgumentException("Cannot create order from empty cart");
         }
 
         List<OrderItem> orderItems = cart.items().stream()
-                .map(cartItem -> new OrderItem(cartItem.productId().value(),
+                .map(cartItem -> new OrderItem(
+                        cartItem.productId().value(),
                         cartItem.quantity(),
                         cartItem.unitPrice()))
                 .toList();
 
-        Order order = new Order(cart.userId(),
-                orderItems);
+        for (OrderItem orderItem : orderItems) {
+            Product product = productRepository.findById(orderItem.productId())
+                    .orElseThrow(() -> new IllegalArgumentException("Product with id: " + orderItem.productId() + " not found: "));
 
+            synchronized (product) {
+                if (product.getStock() < orderItem.quantity()) {
+                    throw new IllegalStateException("Not enough stock for product " + product.getName());
+                }
+                product.decreaseStock(orderItem.quantity());
+                productRepository.save(product);
+            }
+        }
+
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (OrderItem i : orderItems) {
+            Money lineTotal  = i.getUnitPrice().multiply(BigDecimal.valueOf(i.getQuantity()));
+            total = total.add(lineTotal.getAmount());
+        }
+
+        Coupon coupon = null;
+        if (couponCode != null && !couponCode.isBlank()) {
+            coupon = couponRepository.findByCode(couponCode)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid coupon code"));
+
+
+            if (!coupon.isValid()) {
+                throw new IllegalStateException("Coupon expired or usage limit reached");
+            }
+
+            total = coupon.applyToMoney(Money.from(total));
+            coupon.incrementUsage();
+            couponRepository.save(coupon);
+        }
+
+        Order order = new Order(userId, orderItems, total, coupon);
         orderRepository.save(order);
+
+        cartRepository.clearCart(userId);
 
         return order;
     }
 
     public Order payOrder(String orderId) {
-        Order order = orderRepository.findById(new Order.OrderId(orderId))
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
         PaymentSuccessfulEvent paymentEvent = new PaymentSuccessfulEvent(new Order.OrderId(orderId), order.total());
@@ -76,8 +131,10 @@ public class OrderWorkflowService {
     }
 
     public Order shipOrder(String orderId) {
-        Order order = orderRepository.findById(new Order.OrderId(orderId))
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderId));
+
+        shippingService.shipOrder(order);
 
         OrderShippedEvent orderShippedEvent = new OrderShippedEvent(orderId);
         order.markShipped(orderShippedEvent);
@@ -86,7 +143,7 @@ public class OrderWorkflowService {
     }
 
     public Order deliverOrder(String orderId) {
-        Order order = orderRepository.findById(new Order.OrderId(orderId))
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
         OrderDeliveredEvent deliveredEvent = new OrderDeliveredEvent(orderId);
@@ -96,7 +153,7 @@ public class OrderWorkflowService {
     }
 
     public Order requestReturn(String orderId) {
-        Order order = orderRepository.findById(new Order.OrderId(orderId))
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
         OrderReturnedEvent returnedEvent = new OrderReturnedEvent(orderId);
@@ -106,10 +163,14 @@ public class OrderWorkflowService {
     }
 
     public Order cancelOrder(String orderId) {
-        Order order = orderRepository.findById(new Order.OrderId(orderId))
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
         order.cancel();
         return orderRepository.save(order);
+    }
+
+    public List<Order> listCustomerOrders(String customerId) {
+        return orderRepository.findByUserId(customerId);
     }
 }

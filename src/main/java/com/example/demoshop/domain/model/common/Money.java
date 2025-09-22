@@ -28,6 +28,10 @@ public final class Money {
         return new Money(this.amount.multiply(BigDecimal.valueOf(factor)));
     }
 
+    public static Money zero(String currency) {
+        return new Money(BigDecimal.ZERO,currency);
+    }
+
     public BigDecimal getAmount() {
         return amount;
     }

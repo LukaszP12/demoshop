@@ -18,7 +18,7 @@ public class OrderItem {
     }
 
     public String productId() { return productId; }
-    public int quantity() { return quantity; }
+    public int getQuantity() { return quantity; }
     public Money price() { return price; }
 
     public Money subtotal() { return price.multiply(quantity); }

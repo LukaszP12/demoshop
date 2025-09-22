@@ -17,8 +17,9 @@ public class MongoOrderRepository implements OrderRepository {
     }
 
     @Override
-    public void save(Order order) {
+    public Order save(Order order) {
         repository.save(order);
+        return order;
     }
 
     @Override

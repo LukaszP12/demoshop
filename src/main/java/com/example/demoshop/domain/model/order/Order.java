@@ -95,8 +95,8 @@ public class Order {
         this.status = OrderStatus.PAID;
     }
 
-    public void markShipped(OrderShippedEvent event) {
-        if (!this.id.equals(new OrderId(event.orderId()))) {
+    public void markShipped(OrderId orderId) {
+        if (!this.id.equals(orderId)) {
             throw new IllegalArgumentException("Event does not belong to this order");
         }
         if (this.status != OrderStatus.PAID) {
@@ -165,8 +165,12 @@ public class Order {
         return shippingAddress;
     }
 
-    public OrderId id() {
+    public OrderId getId() {
         return id;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public List<OrderItem> items() {
