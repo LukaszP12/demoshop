@@ -4,6 +4,7 @@ import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.car
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CartRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,6 +24,10 @@ public class MongoCartRepository implements CartRepository {
     @Override
     public void save(Cart cart) {
         delegate.save(cart);
+    }
+    @Override
+    public List<Cart> findAll() {
+        return List.of();
     }
 
     @Override
