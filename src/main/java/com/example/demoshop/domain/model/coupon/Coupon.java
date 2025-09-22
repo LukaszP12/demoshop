@@ -1,10 +1,11 @@
 package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.coupon;
 
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDate;
 
 @Document(collection = "coupons")
 public class Coupon {
@@ -14,12 +15,12 @@ public class Coupon {
     private String code;              // e.g. "WELCOME10"
     private BigDecimal discountValue; // either percentage or fixed amount
     private boolean percentage;       // true = percentage, false = fixed
-    private Instant expiryDate;
+    private final LocalDate expiryDate;
     private int usageLimit;           // max number of uses
     private int usedCount;            // how many times used so far
 
     public Coupon(String code, BigDecimal discountValue, boolean percentage,
-                  Instant expiryDate, int usageLimit) {
+                  LocalDate expiryDate, int usageLimit) {
         this.code = code;
         this.discountValue = discountValue;
         this.percentage = percentage;
@@ -29,7 +30,8 @@ public class Coupon {
     }
 
     public boolean isValid() {
-        return Instant.now().isBefore(expiryDate) && usedCount < usageLimit;
+        return LocalDate.now().isBefore(expiryDate.plusDays(1))
+                && usedCount < usageLimit;
     }
 
     public BigDecimal apply(BigDecimal orderTotal) {
@@ -42,6 +44,32 @@ public class Coupon {
                 : discountValue;
 
         return orderTotal.subtract(discount).max(BigDecimal.ZERO);
+    }
+
+    public Money applyToMoney(Money amount) {
+        if (!isValid()) {
+            throw new IllegalStateException("Coupon is invalid or expired");
+        }
+
+        Money discount;
+
+        if (percentage) {
+            // discountValue is a BigDecimal like 10 for 10%
+            BigDecimal fraction = discountValue.divide(BigDecimal.valueOf(100));
+            discount = amount.multiply(fraction);
+        } else {
+            // fixed amount discount
+            discount = new Money(discountValue, amount.getCurrency());
+        }
+
+        Money totalAfterDiscount = amount.subtract(discount);
+
+        // prevent negative totals
+        if (totalAfterDiscount.isNegative()) {
+            return new Money(BigDecimal.ZERO, amount.getCurrency());
+        }
+
+        return totalAfterDiscount;
     }
 
     public void incrementUsage() {
@@ -67,9 +95,7 @@ public class Coupon {
         return percentage;
     }
 
-    public Instant getExpiryDate() {
-        return expiryDate;
-    }
+    public LocalDate getExpiryDate() { return expiryDate; }
 
     public int getUsageLimit() {
         return usageLimit;
@@ -77,5 +103,16 @@ public class Coupon {
 
     public int getUsedCount() {
         return usedCount;
+    }
+
+    @Override
+    public String toString() {
+        return "Coupon{" +
+                "discountValue=" + discountValue +
+                ", percentage=" + percentage +
+                ", expiryDate=" + expiryDate +
+                ", usageLimit=" + usageLimit +
+                ", usedCount=" + usedCount +
+                '}';
     }
 }

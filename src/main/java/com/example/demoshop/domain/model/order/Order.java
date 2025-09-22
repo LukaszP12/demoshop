@@ -69,10 +69,10 @@ public class Order {
         if (item == null) throw new IllegalArgumentException("Item is required");
         if (item.quantity() <= 0) throw new IllegalArgumentException("Quantity must be > 0");
         items.add(item);
-        recalcTotal();
+        recalculateTotal();
     }
 
-    private void recalcTotal() {
+    private void recalculateTotal() {
         Money subtotal = calculateTotal();
         if (appliedCoupon != null && appliedCoupon.isValid()) {
             this.total = new Money(appliedCoupon.apply(subtotal.getAmount()));

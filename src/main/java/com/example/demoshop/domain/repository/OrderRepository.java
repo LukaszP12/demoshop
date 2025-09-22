@@ -11,4 +11,6 @@ public interface OrderRepository {
     long count();
     Optional<Order> findById(String id);
     List<Order> findAll();
+
+    List<Order> findByUserId(String customerId);
 }
