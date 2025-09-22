@@ -50,13 +50,13 @@ public class OrderWorkflowService {
      */
     @TransactionalEventListener
     public void handlePaymentSuccess(PaymentSuccessfulEvent event, Address shippingAddress) {
-        Order order = orderRepository.findById(new Order.OrderId(event.orderId().value()))
+        Order order = orderRepository.findById(event.orderId())
                 .orElseThrow(() -> new IllegalArgumentException("Order not found: " + event.orderId()));
 
         order.markPaid(event);
         orderRepository.save(order);
 
-        Shipment shipment = shippingService.createShipment(event.orderId().value(), shippingAddress);
+        Shipment shipment = shippingService.createShipment(event.orderId(), shippingAddress);
 
         order.markShipped(order.getId());
         orderRepository.save(order);
@@ -82,10 +82,10 @@ public class OrderWorkflowService {
                     .orElseThrow(() -> new IllegalArgumentException("Product with id: " + orderItem.productId() + " not found: "));
 
             synchronized (product) {
-                if (product.getStock() < orderItem.quantity()) {
+                if (product.getStock() < orderItem.getQuantity()) {
                     throw new IllegalStateException("Not enough stock for product " + product.getName());
                 }
-                product.decreaseStock(orderItem.quantity());
+                product.decreaseStock(orderItem.getQuantity());
                 productRepository.save(product);
             }
         }

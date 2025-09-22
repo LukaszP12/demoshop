@@ -2,6 +2,7 @@ package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.or
 
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class OrderItem {
@@ -18,8 +19,11 @@ public class OrderItem {
     }
 
     public String productId() { return productId; }
-    public int getQuantity() { return quantity; }
-    public Money price() { return price; }
+    public Money subtotal() { return price.multiply(BigDecimal.valueOf(quantity)); }
 
-    public Money subtotal() { return price.multiply(quantity); }
+    public Money getUnitPrice() {
+        return price;
+    }
+    public int getQuantity() { return quantity; }
+
 }

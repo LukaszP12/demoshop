@@ -21,6 +21,13 @@ public final class Money {
         return new Money(amount, currency);
     }
 
+    public static Money from(Money other){
+        if (other == null){
+            throw new IllegalArgumentException("Money to copy cannot be null");
+        }
+        return new Money(other.amount,other.getCurrency());
+    }
+
     public static Money zero(String currency) {
         return new Money(BigDecimal.ZERO,currency);
     }
