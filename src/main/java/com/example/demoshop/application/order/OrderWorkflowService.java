@@ -53,12 +53,12 @@ public class OrderWorkflowService {
         Order order = orderRepository.findById(event.orderId())
                 .orElseThrow(() -> new IllegalArgumentException("Order not found: " + event.orderId()));
 
-        order.markPaid(event);
+        order.markPaid();
         orderRepository.save(order);
 
         Shipment shipment = shippingService.createShipment(event.orderId(), shippingAddress);
 
-        order.markShipped(order.getId());
+        order.markShipped();
         orderRepository.save(order);
     }
 
@@ -107,7 +107,11 @@ public class OrderWorkflowService {
                 throw new IllegalStateException("Coupon expired or usage limit reached");
             }
 
-            total = coupon.applyToMoney(Money.from(total));
+            BigDecimal discount = coupon.isPercentage()
+                    ? total.multiply(coupon.getDiscountValue().divide(BigDecimal.valueOf(100)))
+                    : coupon.getDiscountValue();
+
+            total = total.subtract(discount).max(BigDecimal.ZERO);
             coupon.incrementUsage();
             couponRepository.save(coupon);
         }
@@ -124,9 +128,10 @@ public class OrderWorkflowService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        PaymentSuccessfulEvent paymentEvent = new PaymentSuccessfulEvent(new Order.OrderId(orderId), order.total());
+        PaymentSuccessfulEvent paymentEvent = new PaymentSuccessfulEvent(orderId, Money.of(order.getTotal(),
+                                                                                            order.getCurrency()));
 
-        order.markPaid(paymentEvent);
+        order.markPaid();
         return orderRepository.save(order);
     }
 
