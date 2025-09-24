@@ -1,12 +1,16 @@
 package main.java.com.example.demoshop.domain.model;
 
-import com.example.demoshop.domain.model.common.Money;
-import com.example.demoshop.domain.model.order.Order;
-import com.example.demoshop.domain.model.order.OrderItem;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.math.BigDecimal;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 class OrderTest {
 
@@ -14,50 +18,56 @@ class OrderTest {
 
     @BeforeEach
     void setUp() {
-        order = new Order(new Order.OrderId("test-id"));
+        order = new Order("user-123", List.of(), BigDecimal.ZERO, "USD", null);
     }
 
     @Test
-    void newOrder_ShouldHaveCreatedStatusAndEmptyItems() {
-        assertEquals(Order.OrderStatus.CREATED, order.status());
-        assertTrue(order.items().isEmpty());
+    void newOrder_ShouldHavePendingStatusAndEmptyItems() {
+        assertEquals(Order.OrderStatus.PENDING, order.getStatus());
+        assertTrue(order.getItems().isEmpty());
     }
 
     @Test
-    void addItem_ShouldAddItemToOrder() {
-        OrderItem item = new OrderItem("p1", 2, Money.of(10.0));
-        order.addItem(item);
-
-        assertEquals(1, order.items().size());
-        assertEquals(item, order.items().get(0));
+    void markPaid_ShouldChangeStatusToPaid_WhenPending() {
+        order.markPaid();
+        assertEquals(Order.OrderStatus.PAID, order.getStatus());
     }
 
     @Test
-    void total_ShouldReturnSumOfAllItems() {
-        order.addItem(new OrderItem("p1", 2, Money.of(10.0))); // 20
-        order.addItem(new OrderItem("p2", 3, Money.of(5.0)));  // 15
-
-        assertEquals(Money.of(35.0), order.total());
+    void markShipped_ShouldChangeStatusToShipped_WhenPaid() {
+        order.markPaid();
+        order.markShipped();
+        assertEquals(Order.OrderStatus.SHIPPED, order.getStatus());
     }
 
     @Test
-    void placeOrder_ShouldSetStatusToPlaced_WhenItemsExist() {
-        order.addItem(new OrderItem("p1", 1, Money.of(10.0)));
-        order.place();
-
-        assertEquals(Order.OrderStatus.PLACED, order.status());
+    void markDelivered_ShouldChangeStatusToDelivered_WhenShipped() {
+        order.markPaid();
+        order.markShipped();
+        order.markDelivered();
+        assertEquals(Order.OrderStatus.DELIVERED, order.getStatus());
     }
 
     @Test
-    void placeOrder_ShouldThrowException_WhenNoItems() {
-        IllegalStateException exception = assertThrows(IllegalStateException.class, order::place);
-        assertEquals("Cannot place order without items", exception.getMessage());
+    void markReturned_ShouldChangeStatusToReturned_WhenDelivered() {
+        order.markPaid();
+        order.markShipped();
+        order.markDelivered();
+        order.markReturned();
+        assertEquals(Order.OrderStatus.RETURNED, order.getStatus());
     }
 
     @Test
-    void addItem_ShouldThrowException_WhenQuantityIsZeroOrNegative() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> new OrderItem("p1", 0, Money.of(10.0)));
-        assertEquals("Quantity must be > 0", exception.getMessage());
+    void cancel_ShouldChangeStatusToCancelled_WhenPending() {
+        order.cancel();
+        assertEquals(Order.OrderStatus.CANCELLED, order.getStatus());
+    }
+
+    @Test
+    void cancel_ShouldThrowException_WhenShippedOrDelivered() {
+        order.markPaid();
+        order.markShipped();
+        IllegalStateException ex = assertThrows(IllegalStateException.class, order::cancel);
+        assertEquals("Cannot cancel a shipped order", ex.getMessage());
     }
 }
