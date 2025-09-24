@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Service
@@ -93,7 +94,7 @@ public class OrderWorkflowService {
         BigDecimal total = BigDecimal.ZERO;
 
         for (OrderItem i : orderItems) {
-            Money lineTotal  = i.getUnitPrice().multiply(BigDecimal.valueOf(i.getQuantity()));
+            Money lineTotal = i.getUnitPrice().multiply(BigDecimal.valueOf(i.getQuantity()));
             total = total.add(lineTotal.getAmount());
         }
 
@@ -102,21 +103,26 @@ public class OrderWorkflowService {
             coupon = couponRepository.findByCode(couponCode)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid coupon code"));
 
-
             if (!coupon.isValid()) {
                 throw new IllegalStateException("Coupon expired or usage limit reached");
             }
 
             BigDecimal discount = coupon.isPercentage()
-                    ? total.multiply(coupon.getDiscountValue().divide(BigDecimal.valueOf(100)))
+                    ? total.multiply(coupon.getDiscountValue().divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP))
                     : coupon.getDiscountValue();
 
-            total = total.subtract(discount).max(BigDecimal.ZERO);
+            total = total.subtract(discount);
+            if (total.compareTo(BigDecimal.ZERO) < 0) {
+                total = BigDecimal.ZERO;
+            }
+
             coupon.incrementUsage();
             couponRepository.save(coupon);
         }
 
-        Order order = new Order(userId, orderItems, total, coupon);
+        String currency = orderItems.get(0).getUnitPrice().getCurrency();
+
+        Order order = new Order(userId, orderItems, total, currency, coupon);
         orderRepository.save(order);
 
         cartRepository.clearCart(userId);
@@ -129,7 +135,7 @@ public class OrderWorkflowService {
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
         PaymentSuccessfulEvent paymentEvent = new PaymentSuccessfulEvent(orderId, Money.of(order.getTotal(),
-                                                                                            order.getCurrency()));
+                order.getCurrency()));
 
         order.markPaid();
         return orderRepository.save(order);
@@ -142,7 +148,7 @@ public class OrderWorkflowService {
         shippingService.shipOrder(order);
 
         OrderShippedEvent orderShippedEvent = new OrderShippedEvent(orderId);
-        order.markShipped(orderShippedEvent);
+        order.markShipped();
 
         return orderRepository.save(order);
     }
@@ -152,7 +158,7 @@ public class OrderWorkflowService {
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
         OrderDeliveredEvent deliveredEvent = new OrderDeliveredEvent(orderId);
-        order.markDelivered(deliveredEvent);
+        order.markDelivered();
 
         return orderRepository.save(order);
     }
@@ -162,7 +168,7 @@ public class OrderWorkflowService {
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
         OrderReturnedEvent returnedEvent = new OrderReturnedEvent(orderId);
-        order.markReturned(returnedEvent);
+        order.markReturned();
 
         return orderRepository.save(order);
     }
