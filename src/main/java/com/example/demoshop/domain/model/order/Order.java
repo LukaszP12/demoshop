@@ -1,6 +1,5 @@
 package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.PaymentSuccessfulEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.coupon.Coupon;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -21,17 +20,17 @@ public class Order {
     private String currency;
     private Coupon coupon;    // optional applied coupon
     private Instant createdAt;
-    private String status;    // e.g., PENDING, SHIPPED, CANCELLED
+    private OrderStatus status;    // e.g., PENDING, SHIPPED, CANCELLED
 
     public Order(String userId, List<OrderItem> items, BigDecimal total, String currency, Coupon coupon) {
         this.id = UUID.randomUUID().toString();
         this.userId = userId;
         this.items = items;
         this.total = total;
-        this.coupon = coupon;
         this.currency = currency;
+        this.coupon = coupon;
         this.createdAt = Instant.now();
-        this.status = "PENDING";
+        this.status = OrderStatus.PENDING;
     }
 
     // Getters
@@ -60,7 +59,7 @@ public class Order {
         return createdAt;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
@@ -74,45 +73,47 @@ public class Order {
 
     // Business methods
 
-    public void cancel() {
-        if ("SHIPPED".equals(status)) {
-            throw new IllegalStateException("Cannot cancel a shipped order");
-        }
-        this.status = "CANCELLED";
-    }
-
-    public void markAsShipped() {
-        if ("CANCELLED".equals(status)) {
-            throw new IllegalStateException("Cannot ship a cancelled order");
-        }
-        this.status = "SHIPPED";
-    }
-
     public void markPaid() {
-        if (!"PENDING".equals(status)) {
+        if (status != OrderStatus.PENDING) {
             throw new IllegalStateException("Order can only be marked as PAID from PENDING state");
         }
-        this.status = "PAID";
+        this.status = OrderStatus.PAID;
     }
 
     public void markShipped() {
-        if (!"PAID".equals(status)) {
+        if (status != OrderStatus.PAID) {
             throw new IllegalStateException("Order can only be marked as SHIPPED from PAID state");
         }
-        this.status = "SHIPPED";
+        this.status = OrderStatus.SHIPPED;
     }
 
     public void markDelivered() {
-        if (!"SHIPPED".equals(status)) {
+        if (status != OrderStatus.SHIPPED) {
             throw new IllegalStateException("Order can only be marked as DELIVERED from SHIPPED state");
         }
-        this.status = "DELIVERED";
+        this.status = OrderStatus.DELIVERED;
     }
 
     public void markReturned() {
-        if (!"DELIVERED".equals(status)) {
+        if (status != OrderStatus.DELIVERED) {
             throw new IllegalStateException("Order can only be marked as RETURNED from DELIVERED state");
         }
-        this.status = "RETURNED";
+        this.status = OrderStatus.RETURNED;
+    }
+
+    public void cancel() {
+        if (status == OrderStatus.SHIPPED || status == OrderStatus.DELIVERED) {
+            throw new IllegalStateException("Cannot cancel a shipped order");
+        }
+        this.status = OrderStatus.CANCELLED;
+    }
+
+    public enum OrderStatus {
+        PENDING,
+        PAID,
+        SHIPPED,
+        DELIVERED,
+        RETURNED,
+        CANCELLED
     }
 }

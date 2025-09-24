@@ -6,12 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -24,9 +22,10 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> placeOrder(@RequestParam String userId){
+    public ResponseEntity<Order> placeOrder(@RequestParam String userId,
+                                            @RequestParam(required = false) String couponCode) {
         try {
-            Order order = orderService.createOrderFromCart(userId);
+            Order order = orderService.createOrderFromCart(userId, couponCode);
             return ResponseEntity.ok(order);
         } catch (IllegalArgumentException | IllegalStateException e) {
             return ResponseEntity.badRequest().body(null);
@@ -59,7 +58,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/{orderId}")
-    public ResponseEntity<Order> cancelOrder(@PathVariable String orderId){
+    public ResponseEntity<Order> cancelOrder(@PathVariable String orderId) {
         Order updatedOrder = orderService.cancelOrder(orderId);
         return ResponseEntity.ok(updatedOrder);
     }
