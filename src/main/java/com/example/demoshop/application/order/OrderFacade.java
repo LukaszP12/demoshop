@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 public class OrderFacade {
 
     private final OrderWorkflowService workflowService;
-    private final OrderService orderService;
+    private final OrderReadService orderReadService;
 
-    public OrderFacade(OrderWorkflowService workflowService, OrderService orderService) {
+    public OrderFacade(OrderWorkflowService workflowService, OrderReadService orderReadService) {
         this.workflowService = workflowService;
-        this.orderService = orderService;
+        this.orderReadService = orderReadService;
     }
 
     public Order placeOrder(String userId, String couponCode) {
@@ -41,10 +41,10 @@ public class OrderFacade {
     }
 
     public Page<Order> listOrders(String userId, Order.OrderStatus status, Pageable pageable) {
-        return orderService.listOrders(userId, status, pageable);
+        return orderReadService.listOrders(userId, status, pageable);
     }
 
     public Order getOrderById(String orderId){
-        return orderService.getOrderById(orderId);
+        return orderReadService.getOrderById(orderId);
     }
 }
