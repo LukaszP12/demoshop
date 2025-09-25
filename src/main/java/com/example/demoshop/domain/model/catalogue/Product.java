@@ -57,7 +57,7 @@ public class Product {
 
     // Getters and setters
     public ProductId getId() {
-        return id;
+        return new ProductId(id);
     }
 
     public String getName() {
