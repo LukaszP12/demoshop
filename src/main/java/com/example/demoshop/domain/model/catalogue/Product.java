@@ -19,11 +19,12 @@ public class Product {
     private int stock;
     private String description;
     private List<ProductCategory> categories;
+    private List<String> keywords;
 
     public Product() {
     }
 
-    public Product(String name, String type, String brand, double price, int volume_ml, int stock, String description, List<ProductCategory> categories) {
+    public Product(String name, String type, String brand, double price, int volume_ml, int stock, String description, List<ProductCategory> categories, List<String> keywords) {
         this.name = name;
         this.type = type;
         this.brand = brand;
@@ -32,6 +33,7 @@ public class Product {
         this.stock = stock;
         this.description = description;
         this.categories = categories;
+        this.keywords = keywords;
     }
 
     public void decreaseStock(int quantity) {
@@ -53,6 +55,16 @@ public class Product {
 
     public void removeCategory(ProductCategory category) {
         categories.remove(category);
+    }
+
+    public void addKeyword(String keyword){
+        if (!keywords.contains(keyword)){
+            keywords.add(keyword);
+        }
+    }
+
+    public void removeKeyword(String keyword){
+        keywords.remove(keyword);
     }
 
     // Getters and setters
@@ -119,4 +131,8 @@ public class Product {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public List<String> getKeywords() { return keywords; }
+
+    public void setKeywords(List<String> keywords) {this.keywords = keywords;}
 }
