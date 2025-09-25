@@ -6,4 +6,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface OrderService {
     Page<Order> listOrders(String userId, Order.OrderStatus status, Pageable pageable);
+
+    Order getOrderById(String orderId);
 }

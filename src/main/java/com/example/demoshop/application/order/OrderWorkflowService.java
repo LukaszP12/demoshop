@@ -184,4 +184,34 @@ public class OrderWorkflowService {
     public List<Order> listCustomerOrders(String customerId) {
         return orderRepository.findByUserId(customerId);
     }
+
+    public void markPaid(String orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        order.markPaid();
+        orderRepository.save(order);
+    }
+
+    public Order markShipped(String orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        order.markShipped();
+        return orderRepository.save(order);
+    }
+
+    public Order markDelivered(String orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        order.markDelivered();
+        return orderRepository.save(order);
+    }
+
+    public Order markReturned(String orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        order.markReturned();
+        return orderRepository.save(order);
+    }
 }

@@ -27,4 +27,10 @@ public class OrderServiceImpl implements OrderService{
             return orderRepository.findAll(pageable);
         }
     }
+
+    @Override
+    public Order getOrderById(String orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order with id: " + orderId + " not found. "));
+    }
 }
