@@ -21,4 +21,6 @@ public interface ProductRepository {
     Page<Product> findByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
 
     Page<Product> findAll(Pageable pageable);
+
+    Page<Product> findByKeywordsIn(List<String> keywords, Pageable pageable);
 }

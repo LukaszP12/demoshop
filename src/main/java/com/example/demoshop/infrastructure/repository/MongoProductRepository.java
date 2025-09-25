@@ -58,4 +58,9 @@ public class MongoProductRepository implements ProductRepository {
     public Page<Product> findAll(Pageable pageable) {
         return repository.findAll(pageable);
     }
+
+    @Override
+    public Page<Product> findByKeywordsIn(List<String> keywords, Pageable pageable) {
+        return repository.findByKeywordsIn(keywords, pageable);
+    }
 }
