@@ -7,11 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class OrderServiceImpl implements OrderService{
+public class OrderReadServiceImpl implements OrderReadService {
 
     private final SpringDataOrderRepository orderRepository;
 
-    public OrderServiceImpl(SpringDataOrderRepository orderRepository) {
+    public OrderReadServiceImpl(SpringDataOrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 
