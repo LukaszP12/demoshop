@@ -20,11 +20,13 @@ public class Product {
     private String description;
     private List<ProductCategory> categories;
     private List<String> keywords;
+    private double rating;
+    private boolean available;
 
     public Product() {
     }
 
-    public Product(String name, String type, String brand, double price, int volume_ml, int stock, String description, List<ProductCategory> categories, List<String> keywords) {
+    public Product(String name, String type, String brand, double price, int volume_ml, int stock, String description, List<ProductCategory> categories, List<String> keywords, double rating, boolean available) {
         this.name = name;
         this.type = type;
         this.brand = brand;
@@ -34,6 +36,8 @@ public class Product {
         this.description = description;
         this.categories = categories;
         this.keywords = keywords;
+        this.rating = rating;
+        this.available = available;
     }
 
     public void decreaseStock(int quantity) {
@@ -135,4 +139,28 @@ public class Product {
     public List<String> getKeywords() { return keywords; }
 
     public void setKeywords(List<String> keywords) {this.keywords = keywords;}
+
+    public List<ProductCategory> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<ProductCategory> categories) {
+        this.categories = categories;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
 }
