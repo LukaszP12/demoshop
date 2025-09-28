@@ -1,6 +1,7 @@
 package main.java.com.example.demoshop.java.com.example.demoshop.domain.repository;
 
-import com.example.demoshop.domain.model.user.User;
+
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.User;
 
 import java.util.Optional;
 
