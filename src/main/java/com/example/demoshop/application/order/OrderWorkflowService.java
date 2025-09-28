@@ -2,7 +2,10 @@ package main.java.com.example.demoshop.java.com.example.demoshop.application.ord
 
 
 import main.java.com.example.demoshop.java.com.example.demoshop.application.shipping.ShippingService;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderCancelledEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderDeliveredEvent;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderPaidEvent;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderPlacedEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderReturnedEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderShippedEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.PaymentSuccessfulEvent;
@@ -23,6 +26,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -33,17 +37,20 @@ public class OrderWorkflowService {
     private final ProductRepository productRepository;
     private final ShippingService shippingService;
     private final CouponRepository couponRepository;
+    private final OrderEventPublisher eventPublisher;
 
     public OrderWorkflowService(OrderRepository orderRepository,
                                 CartRepository cartRepository,
                                 ProductRepository productRepository,
                                 ShippingService shippingService,
-                                CouponRepository couponRepository) {
+                                CouponRepository couponRepository,
+                                OrderEventPublisher orderEventPublisher) {
         this.orderRepository = orderRepository;
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
         this.shippingService = shippingService;
         this.couponRepository = couponRepository;
+        this.eventPublisher = orderEventPublisher;
     }
 
     /**
@@ -125,6 +132,8 @@ public class OrderWorkflowService {
         Order order = new Order(userId, orderItems, total, currency, coupon);
         orderRepository.save(order);
 
+        eventPublisher.publish(new OrderPlacedEvent(order.getId(), order.getUserId()));
+
         cartRepository.clearCart(userId);
 
         return order;
@@ -137,6 +146,12 @@ public class OrderWorkflowService {
         PaymentSuccessfulEvent paymentEvent = new PaymentSuccessfulEvent(orderId, Money.of(order.getTotal(),
                 order.getCurrency()));
 
+        eventPublisher.publish(new OrderPaidEvent(order.getId(),
+                                                  Instant.now(),
+                                                  order.getTotal(),
+                                                  null,
+                                                  order.getCurrency()));
+
         order.markPaid();
         return orderRepository.save(order);
     }
@@ -147,8 +162,10 @@ public class OrderWorkflowService {
 
         shippingService.shipOrder(order);
 
-        OrderShippedEvent orderShippedEvent = new OrderShippedEvent(orderId);
+        OrderShippedEvent orderShippedEvent = new OrderShippedEvent(orderId, Instant.now());
         order.markShipped();
+
+        eventPublisher.publish(orderShippedEvent);
 
         return orderRepository.save(order);
     }
@@ -160,6 +177,8 @@ public class OrderWorkflowService {
         OrderDeliveredEvent deliveredEvent = new OrderDeliveredEvent(orderId);
         order.markDelivered();
 
+        eventPublisher.publish(deliveredEvent);
+
         return orderRepository.save(order);
     }
 
@@ -170,12 +189,16 @@ public class OrderWorkflowService {
         OrderReturnedEvent returnedEvent = new OrderReturnedEvent(orderId);
         order.markReturned();
 
+        eventPublisher.publish(returnedEvent);
+
         return orderRepository.save(order);
     }
 
     public Order cancelOrder(String orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        eventPublisher.publish(new OrderCancelledEvent(order.getId(), Instant.now()));
 
         order.cancel();
         return orderRepository.save(order);
