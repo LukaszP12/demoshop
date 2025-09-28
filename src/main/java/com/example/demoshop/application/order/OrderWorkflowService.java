@@ -17,7 +17,6 @@ import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.ord
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.OrderItem;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.shipping.Shipment;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.Address;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.User;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CartRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CouponRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.OrderRepository;
@@ -73,7 +72,6 @@ public class OrderWorkflowService {
 
     public Order createOrderFromCart(String cartId, String userId,String couponCode) {
         Cart cart = cartRepository.findByUserId(cartId)
-                .filter(c -> !c.isExpired(expirationSeconds))
                 .orElseThrow(() -> new RuntimeException("Cart not found or expired: " + cartId));
 
         if (cart.items().isEmpty()) {

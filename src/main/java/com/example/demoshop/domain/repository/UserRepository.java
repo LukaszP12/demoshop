@@ -11,7 +11,7 @@ public interface UserRepository {
     User save(User user);
 
     // Find a user by ID
-    Optional<User> findById(User.UserId id);
+    Optional<User> findById(String id);
 
     // Optional: find by email
     Optional<User> findByEmail(String email);
