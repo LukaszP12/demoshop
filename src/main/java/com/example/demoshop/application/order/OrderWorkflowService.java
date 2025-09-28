@@ -146,8 +146,11 @@ public class OrderWorkflowService {
         PaymentSuccessfulEvent paymentEvent = new PaymentSuccessfulEvent(orderId, Money.of(order.getTotal(),
                 order.getCurrency()));
 
-
-        eventPublisher.publish(new OrderPaidEvent(order.getId(), order.getUserId()));
+        eventPublisher.publish(new OrderPaidEvent(order.getId(),
+                                                  Instant.now(),
+                                                  order.getTotal(),
+                                                  null,
+                                                  order.getCurrency()));
 
         order.markPaid();
         return orderRepository.save(order);
