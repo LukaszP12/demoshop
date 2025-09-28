@@ -108,6 +108,10 @@ public class Order {
         this.status = OrderStatus.CANCELLED;
     }
 
+    public void applyCoupon(Coupon coupon) {
+
+    }
+
     public enum OrderStatus {
         PENDING,
         PAID,

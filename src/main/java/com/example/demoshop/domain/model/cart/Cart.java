@@ -29,7 +29,7 @@ public class Cart {
         if (item != null) {
             item.increaseQuantity(quantity);
         } else {
-            items.put(product.getId(), new CartItem(product, quantity));
+            items.put(product.getId(), new CartItem(product, quantity,product.getPrice()));
         }
         touch();
     }
@@ -50,7 +50,7 @@ public class Cart {
     public Money total() {
         return items.values().stream()
                 .map(CartItem::subtotal)
-                .reduce(Money.zero(), Money::add);
+                .reduce(Money.zero("USD"), Money::add);
     }
 
     public void addItem(CartItem item) {

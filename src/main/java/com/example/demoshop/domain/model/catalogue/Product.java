@@ -1,5 +1,6 @@
 package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue;
 
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,7 +15,7 @@ public class Product {
     private String name;
     private String type;
     private String brand;
-    private double price;
+    private Money price;
     private int volume_ml;
     private int stock;
     private String description;
@@ -26,7 +27,7 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, String type, String brand, double price, int volume_ml, int stock, String description, List<ProductCategory> categories, List<String> keywords, double rating, boolean available) {
+    public Product(String name, String type, String brand, Money price, int volume_ml, int stock, String description, List<ProductCategory> categories, List<String> keywords, double rating, boolean available) {
         this.name = name;
         this.type = type;
         this.brand = brand;
@@ -88,7 +89,7 @@ public class Product {
         return brand;
     }
 
-    public double getPrice() {
+    public Money getPrice() {
         return price;
     }
 
@@ -120,7 +121,7 @@ public class Product {
         this.brand = brand;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Money price) {
         this.price = price;
     }
 
