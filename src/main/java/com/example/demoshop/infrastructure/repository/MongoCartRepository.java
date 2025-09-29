@@ -31,6 +31,11 @@ public class MongoCartRepository implements CartRepository {
     }
 
     @Override
+    public void deleteById(String cartId) {
+        delegate.deleteById(cartId);
+    }
+
+    @Override
     public void clearCart(String userId) {
         delegate.findByUserId(userId).ifPresent(cart -> {
             cart.clearItems(); // ✅ assumes your Cart aggregate has this method
