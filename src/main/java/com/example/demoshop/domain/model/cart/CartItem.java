@@ -4,25 +4,23 @@ import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cat
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductId;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class CartItem {
 
     private final ProductId productId;
-    private final String productName;
     private final Money unitPrice;
     private int quantity;
 
-    public CartItem(Product product, int quantity) {
+    public CartItem(Product product, int quantity, Money unitPrice) {
         if (quantity <= 0) throw new IllegalArgumentException("Quantity must be positive");
         this.productId = product.getId();
-        this.productName = product.getName();
-        this.unitPrice = product.getPrice();
         this.quantity = quantity;
+        this.unitPrice = unitPrice;
     }
 
     public ProductId productId() { return productId; }
-    public String productName() { return productName; }
     public Money unitPrice() { return unitPrice; }
     public int quantity() { return quantity; }
 
@@ -36,7 +34,7 @@ public class CartItem {
     }
 
     public Money subtotal() {
-        return unitPrice.multiply(quantity);
+        return unitPrice.multiply(new BigDecimal(quantity));
     }
 
     @Override

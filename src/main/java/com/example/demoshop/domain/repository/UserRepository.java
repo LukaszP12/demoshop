@@ -1,6 +1,7 @@
 package main.java.com.example.demoshop.java.com.example.demoshop.domain.repository;
 
-import com.example.demoshop.domain.model.user.User;
+
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.User;
 
 import java.util.Optional;
 
@@ -10,7 +11,7 @@ public interface UserRepository {
     User save(User user);
 
     // Find a user by ID
-    Optional<User> findById(User.UserId id);
+    Optional<User> findById(String id);
 
     // Optional: find by email
     Optional<User> findByEmail(String email);
