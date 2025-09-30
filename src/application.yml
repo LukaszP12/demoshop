@@ -1,17 +1,33 @@
-spring.data.mongodb.uri=mongodb://admin:password@localhost:27017/demoshop
-spring.data.mongodb.database=demoshop
+spring:
+  data:
+    mongodb:
+      uri: mongodb://admin:password@localhost:27017/demoshop
+      database: demoshop
+  datasource:
+    url: jdbc:postgresql://localhost:5432/demoshop
+    username: demoshop_user
+    password: demoshop_pass
+    jpa:
+      hibernate:
+        ddl-auto: update   # or validate in production
+      show-sql: true
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
 
-spring.rabbitmq.host=localhost
-spring.rabbitmq.port=5672
-spring.rabbitmq.username=guest
-spring.rabbitmq.password=guest
-  
-  # Optional: define queues
-coupon.queue.name=coupon-events
-order.queue.name=order-events
-review.queue.name=review-events
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
-spring.rabbitmq.host=localhost
-spring.rabbitmq.port=5672
-spring.rabbitmq.username=guest
-spring.rabbitmq.password=guest
+# Optional: define queues
+  coupon:
+    queue:
+      name: coupon-events
+
+  order:
+    queue:
+      name: order-events
+
+  review:
+    queue:
+      name: review-events
