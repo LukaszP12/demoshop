@@ -21,6 +21,18 @@ services:
       MONGO_INITDB_DATABASE: demoshop
     volumes:
       - mongo-data:/data/db
+  postgres:
+    image: postgres:15
+    container_name: demoshop_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: demoshop
+      POSTGRES_USER: demoshop_user
+      POSTGRES_PASSWORD: demoshop_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
   mongo-data:
