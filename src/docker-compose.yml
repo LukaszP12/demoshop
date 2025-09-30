@@ -33,6 +33,17 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: demoshop_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@demoshop.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres
 
 volumes:
   mongo-data:
+  postgres_data:
