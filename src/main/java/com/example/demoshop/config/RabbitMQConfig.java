@@ -5,6 +5,7 @@ import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,12 +16,20 @@ public class RabbitMQConfig {
 
     // --- Queues ---
     public static final String COUPON_QUEUE = "coupon-events";
+
     public static final String ORDER_QUEUE = "order-events";
+    public static final String ORDER_RETURN_QUEUE = "order-return-events";
+
     public static final String REVIEW_QUEUE = "review-events";
 
     @Bean
     public DirectExchange eventExchange() {
         return new DirectExchange(EXCHANGE_NAME, true, false);
+    }
+
+    @Bean
+    public TopicExchange eventExchangeTopic() {
+        return new TopicExchange(EXCHANGE_NAME, true, false);
     }
 
     @Bean
@@ -34,6 +43,10 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public Queue orderReturnQueue() { return new Queue(ORDER_RETURN_QUEUE,true); }
+
+
+    @Bean
     public Queue reviewQueue() {
         return new Queue(REVIEW_QUEUE, true);
     }
@@ -45,8 +58,13 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding orderBinding(Queue orderQueue, DirectExchange eventExchange) {
-        return BindingBuilder.bind(orderQueue).to(eventExchange).with("order.placed");
+    public Binding orderQueueBinding(Queue orderQueue, TopicExchange eventExchange) {
+        return BindingBuilder.bind(orderQueue).to(eventExchange).with("order.*");
+    }
+
+    @Bean
+    public Binding orderReturnQueueBinding(Queue orderReturnQueue, DirectExchange eventExchange) {
+        return BindingBuilder.bind(orderReturnQueue).to(eventExchange).with("order.return-requested");
     }
 
     @Bean

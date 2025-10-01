@@ -134,7 +134,8 @@ public class OrderWorkflowService {
         Order order = new Order(userId, orderItems, total, currency, coupon);
         orderRepository.save(order);
 
-        eventPublisher.publish(new OrderPlacedEvent(order.getId(), order.getUserId()));
+        eventPublisher.publish(new OrderPlacedEvent(order.getId()),
+                    "order.placed");
 
         cartRepository.clearCart(userId);
 
@@ -148,11 +149,8 @@ public class OrderWorkflowService {
         PaymentSuccessfulEvent paymentEvent = new PaymentSuccessfulEvent(orderId, Money.of(order.getTotal(),
                 order.getCurrency()));
 
-        eventPublisher.publish(new OrderPaidEvent(order.getId(),
-                                                  Instant.now(),
-                                                  order.getTotal(),
-                                                  null,
-                                                  order.getCurrency()));
+        eventPublisher.publish(new OrderPaidEvent(order.getId()),
+                "order.paid");
 
         order.markPaid();
         return orderRepository.save(order);
@@ -167,7 +165,7 @@ public class OrderWorkflowService {
         OrderShippedEvent orderShippedEvent = new OrderShippedEvent(orderId, Instant.now());
         order.markShipped();
 
-        eventPublisher.publish(orderShippedEvent);
+        eventPublisher.publish(orderShippedEvent,"order.ship");
 
         return orderRepository.save(order);
     }
@@ -179,7 +177,7 @@ public class OrderWorkflowService {
         OrderDeliveredEvent deliveredEvent = new OrderDeliveredEvent(orderId);
         order.markDelivered();
 
-        eventPublisher.publish(deliveredEvent);
+        eventPublisher.publish(deliveredEvent,"order.delivered");
 
         return orderRepository.save(order);
     }
@@ -191,7 +189,7 @@ public class OrderWorkflowService {
         OrderReturnedEvent returnedEvent = new OrderReturnedEvent(orderId);
         order.markReturned();
 
-        eventPublisher.publish(returnedEvent);
+        eventPublisher.publish(returnedEvent,"order.return-requested");
 
         return orderRepository.save(order);
     }
@@ -200,7 +198,7 @@ public class OrderWorkflowService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        eventPublisher.publish(new OrderCancelledEvent(order.getId(), Instant.now()));
+        eventPublisher.publish(new OrderCancelledEvent(order.getId(), Instant.now()),"order.cancel");
 
         order.cancel();
         return orderRepository.save(order);
