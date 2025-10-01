@@ -15,6 +15,6 @@ public class RabbitOrderEventPublisher implements OrderEventPublisher {
 
     @Override
     public void publish(Object event) {
-        rabbitTemplate.convertAndSend("orders-exchange","",event);
+        rabbitTemplate.convertAndSend("events-exchange","",event);
     }
 }

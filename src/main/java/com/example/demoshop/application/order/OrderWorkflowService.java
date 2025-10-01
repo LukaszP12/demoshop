@@ -22,6 +22,7 @@ import main.java.com.example.demoshop.java.com.example.demoshop.domain.repositor
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.OrderRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.math.BigDecimal;
@@ -30,6 +31,7 @@ import java.time.Instant;
 import java.util.List;
 
 @Service
+@Transactional
 public class OrderWorkflowService {
 
     private final OrderRepository orderRepository;
@@ -70,9 +72,9 @@ public class OrderWorkflowService {
         orderRepository.save(order);
     }
 
-    public Order createOrderFromCart(String cartId, String userId,String couponCode) {
-        Cart cart = cartRepository.findByUserId(cartId)
-                .orElseThrow(() -> new RuntimeException("Cart not found or expired: " + cartId));
+    public Order createOrderFromCart(String userId,String couponCode) {
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Cart of userId: " + userId + " not found or expired: " ));
 
         if (cart.items().isEmpty()) {
             throw new IllegalArgumentException("Cannot create order from empty cart");
