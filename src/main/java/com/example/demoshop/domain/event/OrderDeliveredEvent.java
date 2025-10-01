@@ -1,13 +1,12 @@
 package main.java.com.example.demoshop.java.com.example.demoshop.domain.event;
 
-public class OrderDeliveredEvent {
-    private final String orderId;
+import java.time.Instant;
 
+public record OrderDeliveredEvent(
+        String orderId,
+        Instant deliveredAt
+) {
     public OrderDeliveredEvent(String orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getOrderId(){
-        return orderId;
+        this(orderId, Instant.now());
     }
 }

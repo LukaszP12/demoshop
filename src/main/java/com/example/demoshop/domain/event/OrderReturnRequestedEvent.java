@@ -2,11 +2,11 @@ package main.java.com.example.demoshop.java.com.example.demoshop.domain.event;
 
 import java.time.Instant;
 
-public record OrderPlacedEvent(
+public record OrderReturnRequestedEvent(
         String orderId,
-        Instant placedAt
+        Instant requestedAt
 ) {
-    public OrderPlacedEvent(String orderId) {
+    public OrderReturnRequestedEvent(String orderId) {
         this(orderId, Instant.now());
     }
 }
