@@ -4,11 +4,13 @@ import main.java.com.example.demoshop.java.com.example.demoshop.application.cart
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.CartItem;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.Product;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductId;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.Wishlist;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.ProductRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.WishlistRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 @Service
@@ -33,12 +35,12 @@ public class WishlistService {
             throw new RuntimeException("Product not in wishlist");
         }
 
-        Product product = productRepository.findById(new ProductId(productId))
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         // add to cart
         try {
-            cartService.addItem(userId,new CartItem(product,1));
+            cartService.addItem(userId,new CartItem(product,1, Money.of(BigDecimal.valueOf(10),"USD")));
         } catch (Exception e) {
             throw new RuntimeException("Cannot move product to cart: " + e.getMessage());
         }

@@ -59,14 +59,14 @@ public class Coupon {
             discount = amount.multiply(fraction);
         } else {
             // fixed amount discount
-            discount = new Money(discountValue, amount.getCurrency());
+            discount = Money.of(discountValue, amount.getCurrency());
         }
 
         Money totalAfterDiscount = amount.subtract(discount);
 
         // prevent negative totals
         if (totalAfterDiscount.isNegative()) {
-            return new Money(BigDecimal.ZERO, amount.getCurrency());
+            return Money.of(BigDecimal.ZERO, amount.getCurrency());
         }
 
         return totalAfterDiscount;

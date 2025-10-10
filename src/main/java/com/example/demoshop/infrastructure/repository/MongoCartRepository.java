@@ -1,6 +1,7 @@
 package main.java.com.example.demoshop.java.com.example.demoshop.infrastructure.repository;
 
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.Cart;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.CartId;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CartRepository;
 import org.springframework.stereotype.Repository;
 
@@ -31,8 +32,8 @@ public class MongoCartRepository implements CartRepository {
     }
 
     @Override
-    public void deleteById(String cartId) {
-        delegate.deleteById(cartId);
+    public void delete(CartId id) {
+        delegate.deleteById(id.value());
     }
 
     @Override

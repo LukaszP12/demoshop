@@ -7,11 +7,11 @@ import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cat
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductId;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.User;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CartRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.ProductRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.UserRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.presentation.cart.dto.CartSummary;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -28,7 +28,7 @@ public class CartService {
 
     public CartService(CartRepository cartRepository,
                        OrderWorkflowService orderService,
-                       UserRepository userRepository,
+                       @Qualifier("postgresUserRepository") UserRepository userRepository,
                        ProductRepository productRepository) {
         this.cartRepository = cartRepository;
         this.orderService = orderService;
@@ -125,7 +125,7 @@ public class CartService {
         userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Order order = orderService.createOrderFromCart(cartId,userId,couponCode);
+        Order order = orderService.createOrderFromCart(userId,couponCode);
 
         cart.clearItems();
         cartRepository.save(cart);

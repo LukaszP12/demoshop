@@ -31,7 +31,7 @@ public class CouponService {
         rabbitTemplate.convertAndSend(
                 "events-exchange",
                 "coupon.used",
-                new CouponUsedEvent(coupon.getCode(), order.id().value())
+                new CouponUsedEvent(coupon.getCode(), order.getId())
         );
     }
 }

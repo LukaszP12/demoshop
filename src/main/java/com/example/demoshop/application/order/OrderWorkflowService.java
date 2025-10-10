@@ -92,7 +92,7 @@ public class OrderWorkflowService {
                     .orElseThrow(() -> new IllegalArgumentException("Product with id: " + orderItem.productId() + " not found: "));
 
             synchronized (product) {
-                if (product.getStock() < orderItem.getQuantity()) {
+                if (product.getStockQuantity() < orderItem.getQuantity()) {
                     throw new IllegalStateException("Not enough stock for product " + product.getName());
                 }
                 product.decreaseStock(orderItem.getQuantity());
