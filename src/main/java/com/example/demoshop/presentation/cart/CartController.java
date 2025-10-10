@@ -5,6 +5,7 @@ import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.car
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.CartItem;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
 import main.java.com.example.demoshop.java.com.example.demoshop.presentation.cart.dto.CartSummary;
+import main.java.com.example.demoshop.java.com.example.demoshop.presentation.cart.dto.CheckoutRequest;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,7 +66,7 @@ public class CartController {
     }
 
     @PostMapping("/{cartId}/checkout")
-    public Order checkout(@PathVariable String cartId) {
-        return cartService.checkout(cartId);
+    public Order checkout(@PathVariable String cartId,@RequestBody CheckoutRequest request) {
+        return cartService.checkout(cartId, request.userId(), request.couponCode());
     }
 }
