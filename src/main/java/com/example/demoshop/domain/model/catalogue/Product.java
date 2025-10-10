@@ -17,7 +17,7 @@ public class Product {
     private String brand;
     private Money price;
     private int volume_ml;
-    private int stock;
+    private int stockQuantity;
     private String description;
     private List<ProductCategory> categories;
     private List<String> keywords;
@@ -27,13 +27,21 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, String type, String brand, Money price, int volume_ml, int stock, String description, List<ProductCategory> categories, List<String> keywords, double rating, boolean available) {
+    public Product(String id, String name, String description, Money price, int stockQuantity) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+    }
+
+    public Product(String name, String type, String brand, Money price, int volume_ml, int stockQuantity, String description, List<ProductCategory> categories, List<String> keywords, double rating, boolean available) {
         this.name = name;
         this.type = type;
         this.brand = brand;
         this.price = price;
         this.volume_ml = volume_ml;
-        this.stock = stock;
+        this.stockQuantity = stockQuantity;
         this.description = description;
         this.categories = categories;
         this.keywords = keywords;
@@ -42,14 +50,20 @@ public class Product {
     }
 
     public void decreaseStock(int quantity) {
-        if (quantity > stock) {
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Cannot increase by zero or negative number " + name);
+        }
+        if (quantity > stockQuantity) {
             throw new IllegalStateException("Not enough stock for product " + name);
         }
-        stock -= quantity;
+        stockQuantity -= quantity;
     }
 
     public void increaseStock(int quantity) {
-        stock += quantity;
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Cannot increase by zero or negative number " + name);
+        }
+        stockQuantity += quantity;
     }
 
     public void addCategory(ProductCategory category) {
@@ -97,8 +111,8 @@ public class Product {
         return volume_ml;
     }
 
-    public int getStock() {
-        return stock;
+    public int getStockQuantity() {
+        return stockQuantity;
     }
 
     public String getDescription() {
@@ -129,8 +143,8 @@ public class Product {
         this.volume_ml = volume_ml;
     }
 
-    public void setStock(int stock) {
-        this.stock = stock;
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 
     public void setDescription(String description) {
