@@ -1,6 +1,7 @@
 package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.coupon;
 
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.coupon.exceptions.CouponNotApplicableException;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -37,6 +38,11 @@ public class Coupon {
     public BigDecimal apply(BigDecimal orderTotal) {
         if (!isValid()) {
             throw new IllegalStateException("Coupon is invalid or expired");
+        }
+
+        BigDecimal minimum = BigDecimal.valueOf(100);
+        if (orderTotal.compareTo(minimum) < 0){
+            throw new CouponNotApplicableException("Order total below minimum 100");
         }
 
         BigDecimal discount = percentage
