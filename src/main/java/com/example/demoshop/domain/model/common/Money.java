@@ -3,6 +3,7 @@ package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.co
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Currency;
 import java.util.Objects;
 
 public final class Money implements Comparable<Money> {
@@ -62,6 +63,11 @@ public final class Money implements Comparable<Money> {
         if (!this.currency.equals(other.currency)) {
             throw new IllegalArgumentException("Currency mismatch: " + this.currency + " vs " + other.currency);
         }
+    }
+
+    public Money convertTo(Currency targetCurrency, BigDecimal rate) {
+        BigDecimal converted = this.amount.multiply(rate).setScale(2, RoundingMode.HALF_UP);
+        return new Money(converted, targetCurrency.getCurrencyCode());
     }
 
     @Override
