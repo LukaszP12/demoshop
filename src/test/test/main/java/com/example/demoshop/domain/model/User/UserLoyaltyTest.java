@@ -1,14 +1,18 @@
 package main.java.com.example.demoshop.domain.model.User;
 
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.coupon.Coupon;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.OrderItem;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.Address;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.Role;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.User;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Currency;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -26,7 +30,17 @@ class UserLoyaltyTest {
                 address                            // address
         );
 
-        Order order = new Order(Money.of(BigDecimal.valueOf(250), String.valueOf(PLN)));
+        List<OrderItem> items = Collections.emptyList();
+
+        Coupon coupon = null;
+
+        Order order = new Order(
+                user.email(),         // userId (you might use user.getId() if you have one)
+                items,                   // order items
+                BigDecimal.valueOf(250), // total amount
+                PLN.getCurrencyCode(),   // currency as String
+                coupon                   // optional coupon
+        );
 
         user.earnPointsFromOrder(order);
 
