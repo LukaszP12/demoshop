@@ -42,9 +42,10 @@ class UserLoyaltyTest {
                 coupon                   // optional coupon
         );
 
-        user.earnPointsFromOrder(order);
+        LoyaltyPolicy policy = new LoyaltyPolicy(BigDecimal.TEN);
+
+        user.earnPointsFromOrder(order,policy);
 
         assertEquals(25, user.getLoyaltyPoints());
     }
-
 }
