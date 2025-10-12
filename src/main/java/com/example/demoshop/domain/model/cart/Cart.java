@@ -5,12 +5,17 @@ import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cat
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductId;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Cart {
+
+    private final Currency baseCurrency = Currency.getInstance("USD");
 
     private ShippingPolicy shippingPolicy;
     private final String userId;
@@ -22,16 +27,24 @@ public class Cart {
         this.lastUpdated = Instant.now();
     }
 
-    public String userId() { return userId; }
-    public Instant lastUpdated() { return lastUpdated; }
-    public Collection<CartItem> items() { return items.values(); }
+    public String userId() {
+        return userId;
+    }
+
+    public Instant lastUpdated() {
+        return lastUpdated;
+    }
+
+    public Collection<CartItem> items() {
+        return items.values();
+    }
 
     public void addProduct(Product product, int quantity) {
         CartItem item = items.get(product.getId());
         if (item != null) {
             item.increaseQuantity(quantity);
         } else {
-            items.put(product.getId(), new CartItem(product, quantity,product.getPrice()));
+            items.put(product.getId(), new CartItem(product, quantity, product.getPrice()));
         }
         touch();
     }
@@ -78,7 +91,31 @@ public class Cart {
         return cart;
     }
 
+    public Money calculateTotal() {
+        BigDecimal total = items.values().stream()
+                .map(CartItem::subtotal)
+                .reduce(Money.zero(String.valueOf(baseCurrency)), Money::add)
+                .getAmount();
+
+        return Money.of(total, String.valueOf(Currency.getInstance("PLN")));
+    }
+
+    public Collection<CartItem> getItems() {
+        return Collections.unmodifiableCollection(items.values());
+    }
+
+    public Money calculateShipping() {
+        return shippingPolicy.calculateShipping(calculateTotal());
+    }
+
+    public Money calculateGrandTotal() {
+        Money total = calculateTotal();
+        Money shipping = calculateShipping();
+        return  Money.of(total.getAmount().add(shipping.getAmount()), String.valueOf(baseCurrency));
+    }
+
     public void clearItems() {
         items.clear();
     }
+
 }
