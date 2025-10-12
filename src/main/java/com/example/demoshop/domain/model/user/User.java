@@ -1,5 +1,7 @@
 package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user;
 
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -10,6 +12,7 @@ public class User {
     private String email;
     private Role role;
     private Address address;
+    private int loyaltyPoints = 0;
 
     public User(String name, String email, Role role, Address address) {
         this.role = role;
@@ -19,11 +22,25 @@ public class User {
         this.email = Objects.requireNonNull(email);
     }
 
-    public UserId id() { return id; }
-    public String name() { return name; }
-    public String email() { return email; }
-    public Role role() { return role; }
-    public Address address() { return address; }
+    public UserId id() {
+        return id;
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public String email() {
+        return email;
+    }
+
+    public Role role() {
+        return role;
+    }
+
+    public Address address() {
+        return address;
+    }
 
     public void changeName(String newName) {
         if (newName == null || newName.isBlank()) throw new IllegalArgumentException("Name cannot be blank");
@@ -43,16 +60,27 @@ public class User {
         this.address = newAddress; // can be null if user removes address
     }
 
+    public void earnPointsFromOrder(Order order, LoyaltyPolicy policy) {
+        int earned = policy.calculatePoints(order.getTotal());
+        loyaltyPoints += earned;
+    }
+
 
     // Value object for User ID
     public static class UserId {
         private final String value;
 
-        public UserId(String value) { this.value = value; }
+        public UserId(String value) {
+            this.value = value;
+        }
 
-        public static UserId newId() { return new UserId(UUID.randomUUID().toString()); }
+        public static UserId newId() {
+            return new UserId(UUID.randomUUID().toString());
+        }
 
-        public String value() { return value; }
+        public String value() {
+            return value;
+        }
 
         @Override
         public boolean equals(Object o) {
@@ -63,6 +91,8 @@ public class User {
         }
 
         @Override
-        public int hashCode() { return value.hashCode(); }
+        public int hashCode() {
+            return value.hashCode();
+        }
     }
 }
