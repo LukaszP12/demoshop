@@ -17,10 +17,14 @@ import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.ord
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.OrderItem;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.shipping.Shipment;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.Address;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.LoyaltyPolicy;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.User;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.UserNotExistsException;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CartRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CouponRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.OrderRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.ProductRepository;
+import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -29,6 +33,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -39,6 +44,7 @@ public class OrderWorkflowService {
     private final ProductRepository productRepository;
     private final ShippingService shippingService;
     private final CouponRepository couponRepository;
+    private final UserRepository userRepository;
     private final OrderEventPublisher eventPublisher;
 
     public OrderWorkflowService(OrderRepository orderRepository,
@@ -46,12 +52,14 @@ public class OrderWorkflowService {
                                 ProductRepository productRepository,
                                 ShippingService shippingService,
                                 CouponRepository couponRepository,
+                                UserRepository userRepository,
                                 OrderEventPublisher orderEventPublisher) {
         this.orderRepository = orderRepository;
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
         this.shippingService = shippingService;
         this.couponRepository = couponRepository;
+        this.userRepository = userRepository;
         this.eventPublisher = orderEventPublisher;
     }
 
@@ -153,6 +161,10 @@ public class OrderWorkflowService {
                 "order.paid");
 
         order.markPaid();
+
+        User user = userRepository.findById(order.getUserId()).orElseThrow(() -> new UserNotExistsException(order.getUserId()));
+        user.earnPointsFromOrder(order,new LoyaltyPolicy(BigDecimal.TEN));
+
         return orderRepository.save(order);
     }
 
