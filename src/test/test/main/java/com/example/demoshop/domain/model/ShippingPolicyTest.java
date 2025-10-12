@@ -1,10 +1,13 @@
 package main.java.com.example.demoshop.domain.model;
 
+import main.java.com.example.demoshop.java.com.example.demoshop.application.cart.ShippingPolicy;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ShippingPolicyTest {
 
@@ -18,7 +21,7 @@ class ShippingPolicyTest {
                 PLN
         );
 
-        Money shipping = policy.calculateShipping(new Money(BigDecimal.valueOf(250), PLN));
+        Money shipping = policy.calculateShipping(Money.of(BigDecimal.valueOf(250), String.valueOf(PLN)));
 
         assertEquals(BigDecimal.ZERO.setScale(2), shipping.getAmount());
     }
@@ -31,7 +34,7 @@ class ShippingPolicyTest {
                 PLN
         );
 
-        Money shipping = policy.calculateShipping(new Money(BigDecimal.valueOf(150), PLN));
+        Money shipping = policy.calculateShipping(Money.of(BigDecimal.valueOf(150), String.valueOf(PLN)));
 
         assertEquals(BigDecimal.valueOf(15.00).setScale(2), shipping.getAmount());
     }
