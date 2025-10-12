@@ -1,5 +1,6 @@
 package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart;
 
+import main.java.com.example.demoshop.java.com.example.demoshop.application.cart.ShippingPolicy;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.Product;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductId;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 public class Cart {
 
+    private ShippingPolicy shippingPolicy;
     private final String userId;
     private final Map<ProductId, CartItem> items = new HashMap<>();
     private Instant lastUpdated;
