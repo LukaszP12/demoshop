@@ -1,5 +1,7 @@
 package main.java.com.example.demoshop.java.com.example.demoshop.application.catalogue;
 
+import main.java.com.example.demoshop.java.com.example.demoshop.application.catalogue.exceptions.ReviewNotFoundException;
+import main.java.com.example.demoshop.java.com.example.demoshop.application.catalogue.exceptions.UnauthorizedEditException;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.ReviewCreatedEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.Review;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.ReviewRepository;
@@ -22,5 +24,19 @@ public class ReviewService {
         reviewRepository.save(review);
         eventPublisher.publishEvent(new ReviewCreatedEvent(review));
         return review;
+    }
+
+    public Review editReview(Long reviewId, String newText, int newRating, Long userId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewNotFoundException("Review not found: " + reviewId));
+
+        if (!review.getUserId().equals(userId)) {
+            throw new UnauthorizedEditException("User " + userId + " not allowed to edit review " + reviewId);
+        }
+
+        review.setText(newText);
+        review.setRating(newRating);
+
+        return reviewRepository.save(review);
     }
 }
