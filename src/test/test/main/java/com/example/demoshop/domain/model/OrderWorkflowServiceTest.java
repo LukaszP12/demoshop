@@ -38,6 +38,7 @@ class OrderWorkflowServiceTest {
     @Mock
     private ShippingService shippingService;
 
+    @Mock
     private ShippingEventPublisher shippingEventPublisher;
 
     @InjectMocks
