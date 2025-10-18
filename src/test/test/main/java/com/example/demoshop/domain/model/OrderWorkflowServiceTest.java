@@ -33,10 +33,10 @@ class OrderWorkflowServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private ShipmentRepository shipmentRepository;
+    private ShippingService shippingService;
 
     @Mock
-    private ShippingService shippingService;
+    private ShipmentRepository shipmentRepository;
 
     @Mock
     private ShippingEventPublisher shippingEventPublisher;
