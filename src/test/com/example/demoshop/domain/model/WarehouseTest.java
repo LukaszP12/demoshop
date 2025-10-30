@@ -1,5 +1,6 @@
 package com.example.demoshop.domain.model;
 
+import example.demoshop.domain.model.warehouse.Warehouse;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
