@@ -27,4 +27,16 @@ class WarehouseTest {
         assertEquals(6, warehouse.getAvailableQuantity("P123"));
         assertEquals(4, warehouse.getReservedQuantity("P123"));
     }
+
+    @Test
+    void shouldShipReservedStock() {
+        Warehouse warehouse = new Warehouse("Main Warehouse");
+        warehouse.restock("P123", 10);
+        warehouse.reserve("P123", 5);
+
+        warehouse.ship("P123", 5);
+
+        assertEquals(5, warehouse.getAvailableQuantity("P123"));
+        assertEquals(0, warehouse.getReservedQuantity("P123"));
+    }
 }
