@@ -6,14 +6,14 @@ import java.util.Map;
 public class Warehouse {
 
     private final String name;
-    private final Map<String, Integer> stock = new HashMap<>();
+    private final Map<String, InventoryItem> items = new HashMap<>();
 
     public Warehouse(String name) {
         this.name = name;
     }
 
     public void restock(String productId, int quantity) {
-        stock.put(productId, stock.getOrDefault(productId, 0) + quantity);
+        getOrCreateItem(productId).restock(quantity);
     }
 
     public void reserve(String productId, int quantity) {
@@ -21,10 +21,14 @@ public class Warehouse {
     }
 
     public int getAvailableQuantity(String productId) {
-        return stock.getOrDefault(productId, 0);
+        return getOrCreateItem(productId).getAvailable();
+    }
+
+    public int getReservedQuantity(String productId) {
+        return getOrCreateItem(productId).getReserved();
     }
 
     private InventoryItem getOrCreateItem(String productId) {
-        return stock.computeIfAbsent(productId, InventoryItem::new);
+        return items.computeIfAbsent(productId, InventoryItem::new);
     }
 }
