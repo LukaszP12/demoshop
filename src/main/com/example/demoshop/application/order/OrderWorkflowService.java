@@ -154,11 +154,8 @@ public class OrderWorkflowService {
 
         String currency = orderItems.get(0).getUnitPrice().getCurrency();
 
-        Order order = new Order(userId, orderItems, total, currency, coupon);
+        Order order = placeOrder(userId, orderItems, total, currency, coupon);
         orderRepository.save(order);
-
-        eventPublisher.publish(new OrderPlacedEvent(order.getId()),
-                "order.placed");
 
         cartRepository.clearCart(userId);
 
@@ -265,17 +262,22 @@ public class OrderWorkflowService {
         return orderRepository.save(order);
     }
 
-    public Order placeOrder(String userId, List<OrderItem> items) {
+    public Order placeOrder(String userId, List<OrderItem> items, BigDecimal total, String currency, Coupon coupon) {
         Warehouse warehouse = warehouseRepository.findDefault();
+        if (warehouse == null) {
+            throw new IllegalStateException("No default warehouse available");
+        }
 
         for (OrderItem item : items) {
             warehouse.reserve(item.productId(), item.getQuantity());
         }
-
         warehouseRepository.save(warehouse);
 
-        Order order = new Order(userId, items);
+        Order order = new Order(userId, items, total, currency, coupon);
         orderRepository.save(order);
+
+        eventPublisher.publish(new OrderPlacedEvent(order.getId()),
+                "order.placed");
 
         return order;
     }
