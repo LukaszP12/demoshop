@@ -31,4 +31,8 @@ public class Warehouse {
     private InventoryItem getOrCreateItem(String productId) {
         return items.computeIfAbsent(productId, InventoryItem::new);
     }
+
+    public void ship(String productId, int quantity) {
+        getOrCreateItem(productId).ship(quantity);
+    }
 }

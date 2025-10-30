@@ -29,4 +29,12 @@ public class InventoryItem {
     public int getReserved() {
         return reserved;
     }
+
+    // an item must be reserved first before it can be shipped out.
+    public void ship(int quantity) {
+        if (reserved < quantity) {
+            throw new IllegalStateException("Cannot ship more than reserved");
+        }
+        reserved -= quantity;
+    }
 }
