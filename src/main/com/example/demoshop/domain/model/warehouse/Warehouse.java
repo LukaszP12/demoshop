@@ -16,7 +16,15 @@ public class Warehouse {
         stock.put(productId, stock.getOrDefault(productId, 0) + quantity);
     }
 
+    public void reserve(String productId, int quantity) {
+        getOrCreateItem(productId).reserve(quantity);
+    }
+
     public int getAvailableQuantity(String productId) {
         return stock.getOrDefault(productId, 0);
+    }
+
+    private InventoryItem getOrCreateItem(String productId) {
+        return stock.computeIfAbsent(productId, InventoryItem::new);
     }
 }
