@@ -22,6 +22,11 @@ public class Order {
     private Instant createdAt;
     private OrderStatus status;    // e.g., PENDING, SHIPPED, CANCELLED
 
+    public Order(String userId, List<OrderItem> items) {
+        this.userId = userId;
+        this.items = items;
+    }
+
     public Order(String userId, List<OrderItem> items, BigDecimal total, String currency, Coupon coupon) {
         this.id = UUID.randomUUID().toString();
         this.userId = userId;
