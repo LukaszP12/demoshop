@@ -22,6 +22,7 @@ import example.demoshop.domain.model.shipping.Shipment;
 import example.demoshop.domain.model.user.LoyaltyPolicy;
 import example.demoshop.domain.model.user.User;
 import example.demoshop.domain.model.user.UserNotExistsException;
+import example.demoshop.domain.model.warehouse.Warehouse;
 import example.demoshop.domain.repository.CartRepository;
 import example.demoshop.domain.repository.CouponRepository;
 import example.demoshop.domain.repository.OrderRepository;
@@ -259,5 +260,20 @@ public class OrderWorkflowService {
                 .orElseThrow(() -> new RuntimeException("Order not found"));
         order.markReturned();
         return orderRepository.save(order);
+    }
+
+    public Order placeOrder(String userId, List<OrderItem> items) {
+        Warehouse warehouse = warehouseRepository.findDefault();
+
+        for (OrderItem item : items) {
+            warehouse.reserve(item.getProductId(), item.getQuantity());
+        }
+
+        warehouseRepository.save(warehouse);
+
+        Order order = new Order(userId, items);
+        orderRepository.save(order);
+
+        return order;
     }
 }
