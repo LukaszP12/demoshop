@@ -76,6 +76,14 @@ public class Order {
         this.currency = currency;
     }
 
+    public void setCoupon(Coupon coupon) {
+        this.coupon = coupon;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
     // Business methods
 
     public void markPaid() {
