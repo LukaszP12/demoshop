@@ -1,4 +1,4 @@
-package java.com.example.demoshop.domain.model.review;
+package com.example.demoshop.domain.model.review;
 
 import example.demoshop.application.catalogue.exceptions.ReviewNotFoundException;
 import example.demoshop.domain.repository.ReviewRepository;

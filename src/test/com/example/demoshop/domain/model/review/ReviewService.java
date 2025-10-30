@@ -1,4 +1,4 @@
-package java.com.example.demoshop.domain.model.review;
+package com.example.demoshop.domain.model.review;
 
 import example.demoshop.domain.model.catalogue.Review;
 

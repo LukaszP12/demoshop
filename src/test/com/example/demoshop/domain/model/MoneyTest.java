@@ -1,4 +1,4 @@
-package java.com.example.demoshop.domain.model;
+package com.example.demoshop.domain.model;
 
 import example.demoshop.domain.model.common.Money;
 import org.junit.jupiter.api.Test;

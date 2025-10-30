@@ -7,8 +7,8 @@ public class UserRegistrationDto {
     private String password;
     private String username;
 
-    public UserRegistrationDto(String name, String email, String password) {
-        this.name = name;
+    public UserRegistrationDto(String username, String email, String password) {
+        this.username = username;
         this.email = email;
         this.password = password;
     }

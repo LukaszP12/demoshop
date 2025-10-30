@@ -1,4 +1,4 @@
-package java.com.example.demoshop.domain.model.User;
+package com.example.demoshop.domain.model.User;
 
 import example.demoshop.domain.model.coupon.Coupon;
 import example.demoshop.domain.model.order.Order;

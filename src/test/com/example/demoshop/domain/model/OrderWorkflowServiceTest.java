@@ -1,4 +1,4 @@
-package java.com.example.demoshop.domain.model;
+package com.example.demoshop.domain.model;
 
 import example.demoshop.application.order.OrderWorkflowService;
 import example.demoshop.application.shipping.ShippingEventPublisher;

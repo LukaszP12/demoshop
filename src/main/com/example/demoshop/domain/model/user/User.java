@@ -22,6 +22,7 @@ public class User {
     private String name;
     private String email;
     private String username;
+    private String password;
     private Role role;
     private Address address;
     private int loyaltyPoints = 0;
@@ -42,6 +43,9 @@ public class User {
     }
 
     public User(String username, String email, String encode) {
+        this.username = username;
+        this.email = email;
+        this.password = encode;
     }
 
     public long id() {
