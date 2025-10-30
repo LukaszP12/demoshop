@@ -1,10 +1,10 @@
 package java.com.example.demoshop.domain.model.User;
 
-import com.example.demoshop.domain.event.UserRegisteredEvent;
-import com.example.demoshop.domain.model.user.Address;
-import com.example.demoshop.domain.model.user.Role;
-import com.example.demoshop.domain.model.user.User;
+import example.demoshop.domain.event.UserRegisteredEvent;
+import example.demoshop.domain.model.shipping.Address;
+import example.demoshop.domain.model.user.Role;
 
+import example.demoshop.domain.model.user.User;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -1,6 +1,6 @@
 package java.com.example.demoshop.domain.model;
 
-import com.example.demoshop.domain.model.order.Order;
+import example.demoshop.domain.model.order.Order;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

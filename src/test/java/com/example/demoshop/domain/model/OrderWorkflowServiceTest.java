@@ -1,16 +1,16 @@
 package java.com.example.demoshop.domain.model;
 
-import com.example.demoshop.application.order.OrderWorkflowService;
-import com.example.demoshop.application.shipping.ShippingEventPublisher;
-import com.example.demoshop.application.shipping.ShippingRoutingKey;
-import com.example.demoshop.application.shipping.ShippingService;
-import com.example.demoshop.domain.event.PaymentSuccessfulEvent;
-import com.example.demoshop.domain.model.order.Order;
-import com.example.demoshop.domain.model.shipping.Shipment;
-import com.example.demoshop.domain.model.user.Address;
-import com.example.demoshop.domain.repository.OrderRepository;
-import com.example.demoshop.domain.repository.ShipmentRepository;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
+import example.demoshop.application.order.OrderWorkflowService;
+import example.demoshop.application.shipping.ShippingEventPublisher;
+import example.demoshop.application.shipping.ShippingRoutingKey;
+import example.demoshop.application.shipping.ShippingService;
+import example.demoshop.domain.event.PaymentSuccessfulEvent;
+import example.demoshop.domain.model.common.Money;
+import example.demoshop.domain.model.shipping.Address;
+import example.demoshop.domain.model.order.Order;
+import example.demoshop.domain.model.shipping.Shipment;
+import example.demoshop.domain.repository.OrderRepository;
+import example.demoshop.domain.repository.ShipmentRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;

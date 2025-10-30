@@ -1,14 +1,13 @@
 package java.com.example.demoshop.domain.model;
-
-import com.example.demoshop.domain.model.cart.Cart;
-import com.example.demoshop.domain.model.cart.CartSnapshot;
-import com.example.demoshop.domain.model.catalogue.Product;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
+import example.demoshop.domain.model.cart.Cart;
+import example.demoshop.domain.model.cart.CartSnapshot;
+import example.demoshop.domain.model.catalogue.Product;
+import example.demoshop.domain.model.common.Money;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CartSnapshotTest {
 
@@ -45,6 +44,4 @@ class CartSnapshotTest {
         assertEquals(cart.total(), restoredCart.total());
         assertEquals(cart.lastUpdated(), restoredCart.lastUpdated());
     }
-    
-    
 }

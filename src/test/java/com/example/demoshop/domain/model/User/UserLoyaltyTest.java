@@ -1,12 +1,12 @@
 package java.com.example.demoshop.domain.model.User;
 
-import com.example.demoshop.domain.model.order.Order;
-import com.example.demoshop.domain.model.user.Address;
-import com.example.demoshop.domain.model.user.Role;
-import com.example.demoshop.domain.model.user.User;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.coupon.Coupon;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.OrderItem;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.LoyaltyPolicy;
+import example.demoshop.domain.model.coupon.Coupon;
+import example.demoshop.domain.model.order.Order;
+import example.demoshop.domain.model.order.OrderItem;
+import example.demoshop.domain.model.shipping.Address;
+import example.demoshop.domain.model.user.LoyaltyPolicy;
+import example.demoshop.domain.model.user.Role;
+import example.demoshop.domain.model.user.User;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

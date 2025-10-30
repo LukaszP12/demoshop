@@ -1,7 +1,7 @@
 package java.com.example.demoshop.domain.model.review;
 
-import com.example.demoshop.domain.repository.ReviewRepository;
-import main.java.com.example.demoshop.java.com.example.demoshop.application.catalogue.exceptions.ReviewNotFoundException;
+import example.demoshop.application.catalogue.exceptions.ReviewNotFoundException;
+import example.demoshop.domain.repository.ReviewRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

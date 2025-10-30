@@ -1,10 +1,10 @@
 package java.com.example.demoshop.domain.model.User;
 
-import com.example.demoshop.application.user.UserService;
-import com.example.demoshop.domain.model.user.Role;
-import com.example.demoshop.domain.model.user.User;
-import com.example.demoshop.domain.repository.UserRepository;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.UserRegistrationDto;
+import example.demoshop.application.user.UserService;
+import example.demoshop.domain.model.user.Role;
+import example.demoshop.domain.model.user.User;
+import example.demoshop.domain.model.user.UserRegistrationDto;
+import example.demoshop.domain.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.security.crypto.password.PasswordEncoder;

@@ -1,6 +1,6 @@
 package java.com.example.demoshop.domain.model;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
+import example.demoshop.domain.model.common.Money;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

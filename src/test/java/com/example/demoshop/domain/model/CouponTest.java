@@ -1,7 +1,7 @@
 package java.com.example.demoshop.domain.model;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.coupon.Coupon;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.coupon.exceptions.CouponNotApplicableException;
+import example.demoshop.domain.model.coupon.Coupon;
+import example.demoshop.domain.model.coupon.exceptions.CouponNotApplicableException;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
