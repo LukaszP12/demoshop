@@ -1,10 +1,10 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.application.catalogue;
+package com.example.demoshop.application.catalogue;
 
+import com.example.demoshop.domain.event.ReviewCreatedEvent;
+import com.example.demoshop.domain.model.catalogue.Review;
+import com.example.demoshop.domain.repository.ReviewRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.application.catalogue.exceptions.ReviewNotFoundException;
 import main.java.com.example.demoshop.java.com.example.demoshop.application.catalogue.exceptions.UnauthorizedEditException;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.ReviewCreatedEvent;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.Review;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.ReviewRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class ReviewService {
         return review;
     }
 
-    public Review editReview(Long reviewId, String newText, int newRating, Long userId) {
+    public Review editReview(String reviewId, String newText, int newRating, String userId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException("Review not found: " + reviewId));
 

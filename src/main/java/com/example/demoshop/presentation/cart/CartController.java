@@ -1,9 +1,9 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.presentation.cart;
+package com.example.demoshop.presentation.cart;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.application.cart.CartService;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.Cart;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.CartItem;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
+import com.example.demoshop.application.cart.CartService;
+import com.example.demoshop.domain.model.cart.Cart;
+import com.example.demoshop.domain.model.cart.CartItem;
+import com.example.demoshop.domain.model.order.Order;
 import main.java.com.example.demoshop.java.com.example.demoshop.presentation.cart.dto.CartSummary;
 import main.java.com.example.demoshop.java.com.example.demoshop.presentation.cart.dto.CheckoutRequest;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -66,7 +66,7 @@ public class CartController {
     }
 
     @PostMapping("/{cartId}/checkout")
-    public Order checkout(@PathVariable String cartId,@RequestBody CheckoutRequest request) {
+    public Order checkout(@PathVariable String cartId, @RequestBody CheckoutRequest request) {
         return cartService.checkout(cartId, request.userId(), request.couponCode());
     }
 }

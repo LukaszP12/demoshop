@@ -1,7 +1,7 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.application.order;
+package com.example.demoshop.application.order;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
-import main.java.com.example.demoshop.java.com.example.demoshop.infrastructure.repository.SpringDataOrderRepository;
+import com.example.demoshop.domain.model.order.Order;
+import com.example.demoshop.infrastructure.repository.SpringDataOrderRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

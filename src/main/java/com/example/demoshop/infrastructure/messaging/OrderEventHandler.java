@@ -1,11 +1,11 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.infrastructure.messaging;
+package com.example.demoshop.infrastructure.messaging;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderCancelledEvent;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderDeliveredEvent;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderPaidEvent;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderPlacedEvent;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderReturnRequestedEvent;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderShippedEvent;
+import com.example.demoshop.domain.event.OrderCancelledEvent;
+import com.example.demoshop.domain.event.OrderDeliveredEvent;
+import com.example.demoshop.domain.event.OrderPaidEvent;
+import com.example.demoshop.domain.event.OrderPlacedEvent;
+import com.example.demoshop.domain.event.OrderReturnRequestedEvent;
+import com.example.demoshop.domain.event.OrderShippedEvent;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;

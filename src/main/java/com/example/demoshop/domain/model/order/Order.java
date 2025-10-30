@@ -1,4 +1,4 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order;
+package com.example.demoshop.domain.model.order;
 
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.coupon.Coupon;
 import org.springframework.data.annotation.Id;
@@ -15,14 +15,14 @@ public class Order {
     @Id
     private String id;
     private String userId;
-    private List<OrderItem> items;
+    private List<main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.OrderItem> items;
     private BigDecimal total; // ✅ total as BigDecimal
     private String currency;
     private Coupon coupon;    // optional applied coupon
     private Instant createdAt;
     private OrderStatus status;    // e.g., PENDING, SHIPPED, CANCELLED
 
-    public Order(String userId, List<OrderItem> items, BigDecimal total, String currency, Coupon coupon) {
+    public Order(String userId, List<main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.OrderItem> items, BigDecimal total, String currency, Coupon coupon) {
         this.id = UUID.randomUUID().toString();
         this.userId = userId;
         this.items = items;
@@ -43,7 +43,7 @@ public class Order {
         return userId;
     }
 
-    public List<OrderItem> getItems() {
+    public List<main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.OrderItem> getItems() {
         return items;
     }
 

@@ -1,8 +1,8 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.infrastructure.repository;
+package com.example.demoshop.infrastructure.repository;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.Cart;
+import com.example.demoshop.domain.model.cart.Cart;
+import com.example.demoshop.domain.repository.CartRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.CartId;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CartRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

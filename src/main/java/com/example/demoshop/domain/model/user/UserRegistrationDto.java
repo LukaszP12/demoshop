@@ -7,11 +7,10 @@ public class UserRegistrationDto {
     private String password;
     private String username;
 
-    public UserRegistrationDto(String name, String email, String password, String username) {
+    public UserRegistrationDto(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.username = username;
     }
 
     public String getName() {

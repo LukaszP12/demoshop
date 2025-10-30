@@ -1,6 +1,6 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.presentation.user;
+package com.example.demoshop.presentation.user;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.application.user.WishlistService;
+import com.example.demoshop.application.user.WishlistService;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.Wishlist;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

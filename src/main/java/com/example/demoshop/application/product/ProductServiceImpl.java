@@ -1,7 +1,7 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.application.product;
+package com.example.demoshop.application.product;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.Product;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.ProductRepository;
+import com.example.demoshop.domain.model.catalogue.Product;
+import com.example.demoshop.domain.repository.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

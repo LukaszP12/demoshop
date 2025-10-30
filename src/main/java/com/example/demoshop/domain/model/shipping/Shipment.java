@@ -1,25 +1,25 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.shipping;
+package com.example.demoshop.domain.model.shipping;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.Address;
+import com.example.demoshop.domain.model.user.Address;
 import java.time.Instant;
 
 public class Shipment {
-    private final ShipmentId id;
+    private final main.java.com.example.demoshop.java.com.example.demoshop.domain.model.shipping.ShipmentId id;
     private final String orderId;
     private final Address shippingAddress;
-    private TrackingNumber trackingNumber;
+    private main.java.com.example.demoshop.java.com.example.demoshop.domain.model.shipping.TrackingNumber trackingNumber;
     private boolean delivered;
     private final Instant createdAt;
 
     public Shipment(String orderId, Address shippingAddress) {
-        this.id = ShipmentId.newId();
+        this.id = main.java.com.example.demoshop.java.com.example.demoshop.domain.model.shipping.ShipmentId.newId();
         this.orderId = orderId;
         this.shippingAddress = shippingAddress;
         this.createdAt = Instant.now();
         this.delivered = false;
     }
 
-    public void assignTrackingNumber(TrackingNumber trackingNumber) {
+    public void assignTrackingNumber(main.java.com.example.demoshop.java.com.example.demoshop.domain.model.shipping.TrackingNumber trackingNumber) {
         this.trackingNumber = trackingNumber;
     }
 
@@ -28,9 +28,9 @@ public class Shipment {
     }
 
     public boolean isDelivered() { return delivered; }
-    public ShipmentId id() { return id; }
+    public main.java.com.example.demoshop.java.com.example.demoshop.domain.model.shipping.ShipmentId id() { return id; }
     public String orderId() { return orderId; }
     public Address shippingAddress() { return shippingAddress; }
-    public TrackingNumber trackingNumber() { return trackingNumber; }
+    public main.java.com.example.demoshop.java.com.example.demoshop.domain.model.shipping.TrackingNumber trackingNumber() { return trackingNumber; }
     public Instant createdAt() { return createdAt; }
 }

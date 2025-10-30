@@ -1,6 +1,6 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.infrastructure.repository;
+package com.example.demoshop.infrastructure.repository;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.Cart;
+import com.example.demoshop.domain.model.cart.Cart;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;

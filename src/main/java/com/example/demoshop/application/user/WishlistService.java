@@ -1,12 +1,11 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.application.user;
+package com.example.demoshop.application.user;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.application.cart.CartService;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.CartItem;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.Product;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductId;
+import com.example.demoshop.application.cart.CartService;
+import com.example.demoshop.domain.model.cart.CartItem;
+import com.example.demoshop.domain.model.catalogue.Product;
+import com.example.demoshop.domain.repository.ProductRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.Wishlist;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.ProductRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.WishlistRepository;
 import org.springframework.stereotype.Service;
 

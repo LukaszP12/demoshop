@@ -1,7 +1,7 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.domain.repository;
+package com.example.demoshop.domain.repository;
 
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.User;
+import com.example.demoshop.domain.model.user.User;
 
 import java.util.Optional;
 
@@ -15,4 +15,6 @@ public interface UserRepository {
 
     // Optional: find by email
     Optional<User> findByEmail(String email);
+
+    boolean existsByEmail(String email);
 }

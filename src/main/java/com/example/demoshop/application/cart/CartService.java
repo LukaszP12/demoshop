@@ -1,15 +1,15 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.application.cart;
+package com.example.demoshop.application.cart;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.application.order.OrderWorkflowService;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.Cart;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.CartItem;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.Product;
+import com.example.demoshop.application.order.OrderWorkflowService;
+import com.example.demoshop.domain.model.cart.Cart;
+import com.example.demoshop.domain.model.cart.CartItem;
+import com.example.demoshop.domain.model.catalogue.Product;
+import com.example.demoshop.domain.model.order.Order;
+import com.example.demoshop.domain.repository.CartRepository;
+import com.example.demoshop.domain.repository.ProductRepository;
+import com.example.demoshop.domain.repository.UserRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductId;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CartRepository;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.ProductRepository;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.UserRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.presentation.cart.dto.CartSummary;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class CartService {
         this.productRepository = productRepository;
     }
 
-    public Cart getCart(String userId){
+    public Cart getCart(String userId) {
         return cartRepository.findByUserId(userId)
                 .filter(cart -> !cart.isExpired(expirationSeconds))
                 .orElseThrow(() -> new RuntimeException("Cart with id: " + userId + " not found."));
@@ -66,16 +66,16 @@ public class CartService {
                 .filter(item -> item.productId().equals(productId))
                 .findFirst()
                 .ifPresentOrElse(
-                    item -> {
-                            if (quantity > 0){
+                        item -> {
+                            if (quantity > 0) {
                                 item.setQuantity(quantity);
                             } else {
                                 cart.items().remove(item);
                             }
-                    },
+                        },
                         () -> {
-                            if (quantity > 0){
-                                cart.addItem(new CartItem(product,quantity,product.getPrice()));
+                            if (quantity > 0) {
+                                cart.addItem(new CartItem(product, quantity, product.getPrice()));
                             }
                         }
                 );
@@ -83,7 +83,7 @@ public class CartService {
         cartRepository.save(cart);
     }
 
-    public void removeItem(String cartId, String productId){
+    public void removeItem(String cartId, String productId) {
         Cart cart = cartRepository.findByUserId(cartId)
                 .filter(c -> !c.isExpired(expirationSeconds))
                 .orElseThrow(() -> new RuntimeException("Cart not found or expired: " + cartId));
@@ -114,7 +114,7 @@ public class CartService {
                 .map(item -> item.unitPrice().multiply(new BigDecimal(item.quantity())))
                 .reduce(Money.zero(""), Money::add);
 
-        return new CartSummary(totalItems,totalPrice.getAmount().doubleValue());
+        return new CartSummary(totalItems, totalPrice.getAmount().doubleValue());
     }
 
     public Order checkout(String cartId, String userId, String couponCode) {
@@ -125,7 +125,7 @@ public class CartService {
         userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Order order = orderService.createOrderFromCart(userId,couponCode);
+        Order order = orderService.createOrderFromCart(userId, couponCode);
 
         cart.clearItems();
         cartRepository.save(cart);

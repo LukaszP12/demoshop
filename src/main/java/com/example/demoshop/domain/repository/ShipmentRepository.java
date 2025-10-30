@@ -1,6 +1,6 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.domain.repository;
+package com.example.demoshop.domain.repository;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.shipping.Shipment;
+import com.example.demoshop.domain.model.shipping.Shipment;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.shipping.ShipmentId;
 
 import java.util.Optional;

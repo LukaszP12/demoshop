@@ -1,7 +1,7 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.presentation.order;
+package com.example.demoshop.presentation.order;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.application.order.OrderFacade;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
+import com.example.demoshop.application.order.OrderFacade;
+import com.example.demoshop.domain.model.order.Order;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;

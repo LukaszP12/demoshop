@@ -1,30 +1,32 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.application.order;
+package com.example.demoshop.application.order;
 
+import com.example.demoshop.application.shipping.ShippingEventPublisher;
+import com.example.demoshop.application.shipping.ShippingRoutingKey;
+import com.example.demoshop.application.shipping.ShippingService;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.application.shipping.ShippingService;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderCancelledEvent;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderDeliveredEvent;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderPaidEvent;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderPlacedEvent;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderReturnedEvent;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.OrderShippedEvent;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.PaymentSuccessfulEvent;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.Cart;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.Product;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.coupon.Coupon;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.OrderItem;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.shipping.Shipment;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.Address;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.LoyaltyPolicy;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.User;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.UserNotExistsException;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CartRepository;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CouponRepository;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.OrderRepository;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.ProductRepository;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.UserRepository;
+import com.example.demoshop.domain.event.OrderCancelledEvent;
+import com.example.demoshop.domain.event.OrderDeliveredEvent;
+import com.example.demoshop.domain.event.OrderPaidEvent;
+import com.example.demoshop.domain.event.OrderPlacedEvent;
+import com.example.demoshop.domain.event.OrderReturnedEvent;
+import com.example.demoshop.domain.event.OrderShippedEvent;
+import com.example.demoshop.domain.event.PaymentSuccessfulEvent;
+import com.example.demoshop.domain.event.ShipmentCreatedEvent;
+
+import com.example.demoshop.domain.model.cart.Cart;
+import com.example.demoshop.domain.model.catalogue.Product;
+import com.example.demoshop.domain.model.order.Order;
+import com.example.demoshop.domain.model.shipping.Shipment;
+import com.example.demoshop.domain.model.user.Address;
+import com.example.demoshop.domain.model.user.User;
+
+import com.example.demoshop.domain.repository.CartRepository;
+import com.example.demoshop.domain.repository.OrderRepository;
+import com.example.demoshop.domain.repository.ProductRepository;
+import com.example.demoshop.domain.repository.ShipmentRepository;
+import com.example.demoshop.domain.repository.UserRepository;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -33,7 +35,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -43,24 +44,30 @@ public class OrderWorkflowService {
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
     private final ShippingService shippingService;
-    private final CouponRepository couponRepository;
+    private final ShipmentRepository shipmentRepository;
+    private final main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CouponRepository couponRepository;
     private final UserRepository userRepository;
-    private final OrderEventPublisher eventPublisher;
+    private final main.java.com.example.demoshop.java.com.example.demoshop.application.order.OrderEventPublisher eventPublisher;
+    private final ShippingEventPublisher shippingEventPublisher;
 
     public OrderWorkflowService(OrderRepository orderRepository,
                                 CartRepository cartRepository,
                                 ProductRepository productRepository,
                                 ShippingService shippingService,
-                                CouponRepository couponRepository,
-                                UserRepository userRepository,
-                                OrderEventPublisher orderEventPublisher) {
+                                ShipmentRepository shipmentRepository,
+                                main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CouponRepository couponRepository,
+                                @Qualifier("postgresUserRepository") UserRepository userRepository,
+                                main.java.com.example.demoshop.java.com.example.demoshop.application.order.OrderEventPublisher orderEventPublisher,
+                                ShippingEventPublisher shippingEventPublisher) {
         this.orderRepository = orderRepository;
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
         this.shippingService = shippingService;
+        this.shipmentRepository = shipmentRepository;
         this.couponRepository = couponRepository;
         this.userRepository = userRepository;
         this.eventPublisher = orderEventPublisher;
+        this.shippingEventPublisher = shippingEventPublisher;
     }
 
     /**
@@ -75,27 +82,29 @@ public class OrderWorkflowService {
         orderRepository.save(order);
 
         Shipment shipment = shippingService.createShipment(event.orderId(), shippingAddress);
+        shipmentRepository.save(shipment);
+        shippingEventPublisher.publish(new ShipmentCreatedEvent(shipment.id(), order.getId()), ShippingRoutingKey.SHIPMENT_CREATED);
 
         order.markShipped();
         orderRepository.save(order);
     }
 
-    public Order createOrderFromCart(String userId,String couponCode) {
+    public Order createOrderFromCart(String userId, String couponCode) {
         Cart cart = cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Cart of userId: " + userId + " not found or expired: " ));
+                .orElseThrow(() -> new RuntimeException("Cart of userId: " + userId + " not found or expired: "));
 
         if (cart.items().isEmpty()) {
             throw new IllegalArgumentException("Cannot create order from empty cart");
         }
 
-        List<OrderItem> orderItems = cart.items().stream()
-                .map(cartItem -> new OrderItem(
+        List<main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.OrderItem> orderItems = cart.items().stream()
+                .map(cartItem -> new main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.OrderItem(
                         cartItem.productId().value(),
                         cartItem.quantity(),
                         cartItem.unitPrice()))
                 .toList();
 
-        for (OrderItem orderItem : orderItems) {
+        for (main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.OrderItem orderItem : orderItems) {
             Product product = productRepository.findById(orderItem.productId())
                     .orElseThrow(() -> new IllegalArgumentException("Product with id: " + orderItem.productId() + " not found: "));
 
@@ -110,12 +119,12 @@ public class OrderWorkflowService {
 
         BigDecimal total = BigDecimal.ZERO;
 
-        for (OrderItem i : orderItems) {
-            Money lineTotal = i.getUnitPrice().multiply(BigDecimal.valueOf(i.getQuantity()));
+        for (main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.OrderItem i : orderItems) {
+            main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money lineTotal = i.getUnitPrice().multiply(BigDecimal.valueOf(i.getQuantity()));
             total = total.add(lineTotal.getAmount());
         }
 
-        Coupon coupon = null;
+        main.java.com.example.demoshop.java.com.example.demoshop.domain.model.coupon.Coupon coupon = null;
         if (couponCode != null && !couponCode.isBlank()) {
             coupon = couponRepository.findByCode(couponCode)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid coupon code"));
@@ -143,7 +152,7 @@ public class OrderWorkflowService {
         orderRepository.save(order);
 
         eventPublisher.publish(new OrderPlacedEvent(order.getId()),
-                    "order.placed");
+                "order.placed");
 
         cartRepository.clearCart(userId);
 
@@ -154,7 +163,7 @@ public class OrderWorkflowService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        PaymentSuccessfulEvent paymentEvent = new PaymentSuccessfulEvent(orderId, Money.of(order.getTotal(),
+        PaymentSuccessfulEvent paymentEvent = new PaymentSuccessfulEvent(orderId, main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money.of(order.getTotal(),
                 order.getCurrency()));
 
         eventPublisher.publish(new OrderPaidEvent(order.getId()),
@@ -162,8 +171,8 @@ public class OrderWorkflowService {
 
         order.markPaid();
 
-        User user = userRepository.findById(order.getUserId()).orElseThrow(() -> new UserNotExistsException(order.getUserId()));
-        user.earnPointsFromOrder(order,new LoyaltyPolicy(BigDecimal.TEN));
+        User user = userRepository.findById(order.getUserId()).orElseThrow(() -> new main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.UserNotExistsException(order.getUserId()));
+        user.earnPointsFromOrder(order, new main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.LoyaltyPolicy(BigDecimal.TEN));
 
         return orderRepository.save(order);
     }
@@ -177,7 +186,7 @@ public class OrderWorkflowService {
         OrderShippedEvent orderShippedEvent = new OrderShippedEvent(orderId, Instant.now());
         order.markShipped();
 
-        eventPublisher.publish(orderShippedEvent,"order.ship");
+        eventPublisher.publish(orderShippedEvent, "order.ship");
 
         return orderRepository.save(order);
     }
@@ -189,7 +198,7 @@ public class OrderWorkflowService {
         OrderDeliveredEvent deliveredEvent = new OrderDeliveredEvent(orderId);
         order.markDelivered();
 
-        eventPublisher.publish(deliveredEvent,"order.delivered");
+        eventPublisher.publish(deliveredEvent, "order.delivered");
 
         return orderRepository.save(order);
     }
@@ -201,7 +210,7 @@ public class OrderWorkflowService {
         OrderReturnedEvent returnedEvent = new OrderReturnedEvent(orderId);
         order.markReturned();
 
-        eventPublisher.publish(returnedEvent,"order.return-requested");
+        eventPublisher.publish(returnedEvent, "order.return-requested");
 
         return orderRepository.save(order);
     }
@@ -210,7 +219,7 @@ public class OrderWorkflowService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
-        eventPublisher.publish(new OrderCancelledEvent(order.getId(), Instant.now()),"order.cancel");
+        eventPublisher.publish(new OrderCancelledEvent(order.getId(), Instant.now()), "order.cancel");
 
         order.cancel();
         return orderRepository.save(order);

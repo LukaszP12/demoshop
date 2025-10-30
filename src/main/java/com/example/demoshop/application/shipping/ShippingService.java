@@ -1,13 +1,13 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.application.shipping;
+package com.example.demoshop.application.shipping;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.shipping.Shipment;
+import com.example.demoshop.domain.model.order.Order;
+import com.example.demoshop.domain.model.shipping.Shipment;
+import com.example.demoshop.domain.model.user.Address;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.shipping.TrackingNumber;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.Address;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ShippingService implements ShippingPort{
+public class ShippingService implements ShippingPort {
 
     public Shipment createShipment(String orderId, Address address) {
         Shipment shipment = new Shipment(orderId, address);

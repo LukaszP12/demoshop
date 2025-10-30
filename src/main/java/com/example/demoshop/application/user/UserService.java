@@ -1,8 +1,8 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.application.user;
+package com.example.demoshop.application.user;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.User;
+import com.example.demoshop.domain.model.user.User;
+import com.example.demoshop.domain.repository.UserRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.UserRegistrationDto;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(@Qualifier("postgresUserRepository") UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(@Qualifier("postgresUserRepository") UserRepository userRepository,
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -29,6 +30,7 @@ public class UserService {
         }
 
         User user = new User(dto.getUsername(), dto.getEmail(), passwordEncoder.encode(dto.getPassword()));
+        user.setRole("Customer");
 
         return userRepository.save(user);
     }

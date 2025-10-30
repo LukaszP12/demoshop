@@ -1,6 +1,6 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.domain.repository;
+package com.example.demoshop.domain.repository;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.Product;
+import com.example.demoshop.domain.model.catalogue.Product;
 import org.springframework.data.domain.Page;
 
 import org.springframework.data.domain.Pageable;

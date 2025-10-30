@@ -1,7 +1,7 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.infrastructure.repository;
+package com.example.demoshop.infrastructure.repository;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.OrderRepository;
+import com.example.demoshop.domain.model.order.Order;
+import com.example.demoshop.domain.repository.OrderRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

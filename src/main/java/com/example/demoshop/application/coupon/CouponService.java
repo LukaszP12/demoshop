@@ -1,8 +1,8 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.application.coupon;
+package com.example.demoshop.application.coupon;
 
+import com.example.demoshop.domain.model.order.Order;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.CouponUsedEvent;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.coupon.Coupon;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CouponRepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;

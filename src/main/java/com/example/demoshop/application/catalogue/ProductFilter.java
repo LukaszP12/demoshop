@@ -6,29 +6,29 @@ import java.util.Optional;
 
 public class ProductFilter {
 
-    private final Optional<BigDecimal> minPrice;
-    private final Optional<BigDecimal> maxPrice;
+    private final BigDecimal minPrice;
+    private final BigDecimal maxPrice;
     private final List<String> categories;
     private final List<String> brands;
-    private final Optional<Double> minRating;
-    private final Optional<Boolean> available;
-    private final Optional<String> searchTerm;
+    private final Double minRating;
+    private final Boolean available;
+    private final String searchTerm;
 
     private ProductFilter(Builder builder) {
-        this.minPrice = Optional.ofNullable(builder.minPrice);
-        this.maxPrice = Optional.ofNullable(builder.maxPrice);
+        this.minPrice = builder.minPrice;
+        this.maxPrice = builder.maxPrice;
         this.categories = builder.categories != null ? builder.categories : List.of();
         this.brands = builder.brands != null ? builder.brands : List.of();
-        this.minRating = Optional.ofNullable(builder.minRating);
-        this.available = Optional.ofNullable(builder.available);
-        this.searchTerm = Optional.ofNullable(builder.searchTerm);
+        this.minRating = builder.minRating;
+        this.available = builder.available;
+        this.searchTerm = builder.searchTerm;
     }
 
-    public Optional<BigDecimal> getMinPrice() {
+    public BigDecimal getMinPrice() {
         return minPrice;
     }
 
-    public Optional<BigDecimal> getMaxPrice() {
+    public BigDecimal getMaxPrice() {
         return maxPrice;
     }
 
@@ -40,15 +40,15 @@ public class ProductFilter {
         return brands;
     }
 
-    public Optional<Double> getMinRating() {
+    public Double getMinRating() {
         return minRating;
     }
 
-    public Optional<Boolean> getAvailable() {
+    public Boolean getAvailable() {
         return available;
     }
 
-    public Optional<String> getSearchTerm() {
+    public String getSearchTerm() {
         return searchTerm;
     }
 

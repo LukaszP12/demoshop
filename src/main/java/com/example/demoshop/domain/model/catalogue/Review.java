@@ -1,6 +1,6 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue;
+package com.example.demoshop.domain.model.catalogue;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.event.ReviewCreatedEvent;
+import com.example.demoshop.domain.event.ReviewCreatedEvent;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -17,6 +17,7 @@ public class Review {
     private int rating;         // e.g., 1 to 5
     private String comment;
     private Instant createdAt;
+    private String text;
 
     public Review(String productId, String userId, int rating, String comment) {
         this.productId = productId;
@@ -63,5 +64,9 @@ public class Review {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public void setText(String newText) {
+        this.text = newText;
     }
 }

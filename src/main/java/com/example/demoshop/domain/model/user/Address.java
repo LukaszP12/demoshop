@@ -1,13 +1,26 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user;
+package com.example.demoshop.domain.model.user;
+
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
+import jakarta.persistence.Embeddable;
 
 import java.util.Objects;
 
+@Embeddable
+@Access(AccessType.FIELD)
 public class Address {
 
     private final String street;
     private final String city;
     private final String country;
     private final String postalCode;
+
+    protected Address() {
+        this.street = null;
+        this.city = null;
+        this.country = null;
+        this.postalCode = null;
+    }
 
     public Address(String street, String city, String country, String postalCode) {
         this.street = Objects.requireNonNull(street, "Street cannot be null");
@@ -16,10 +29,10 @@ public class Address {
         this.postalCode = Objects.requireNonNull(postalCode, "Postal code cannot be null");
     }
 
-    public String street() { return street; }
-    public String city() { return city; }
-    public String country() { return country; }
-    public String postalCode() { return postalCode; }
+    public String getStreet() { return street; }
+    public String getCity() { return city; }
+    public String getCountry() { return country; }
+    public String getPostalCode() { return postalCode; }
 
     @Override
     public boolean equals(Object o) {

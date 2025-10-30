@@ -1,18 +1,24 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.domain.repository;
+package com.example.demoshop.domain.repository;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.Review;
+import com.example.demoshop.domain.model.catalogue.Review;
+import org.springframework.data.domain.Example;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
+@Repository
 public interface ReviewRepository extends MongoRepository<Review, String> {
 
-    // Find all reviews for a given product
     List<Review> findByProductId(String productId);
 
-    // Find all reviews by a specific user
     List<Review> findByUserId(String userId);
 
-    // Optional: find reviews for a product sorted by creation date
     List<Review> findByProductIdOrderByCreatedAtDesc(String productId);
+
+    @Override
+    <S extends Review> Optional<S> findOne(Example<S> example);
+
+    Optional<Review> findById(String id);
 }

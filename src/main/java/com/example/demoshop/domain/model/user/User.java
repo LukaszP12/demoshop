@@ -1,28 +1,50 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user;
+package com.example.demoshop.domain.model.user;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
+import com.example.demoshop.domain.model.order.Order;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+
+import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 
+@Entity
+@Table(name = "users")
 public class User {
 
-    private final UserId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String name;
     private String email;
+    private String username;
     private Role role;
     private Address address;
     private int loyaltyPoints = 0;
 
+    public User() {
+    }
+
+    public User(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
     public User(String name, String email, Role role, Address address) {
         this.role = role;
         this.address = address;
-        this.id = UserId.newId();
         this.name = Objects.requireNonNull(name);
         this.email = Objects.requireNonNull(email);
     }
 
-    public UserId id() {
+    public User(String username, String email, String encode) {
+    }
+
+    public long id() {
         return id;
     }
 
@@ -60,11 +82,31 @@ public class User {
         this.address = newAddress; // can be null if user removes address
     }
 
-    public void earnPointsFromOrder(Order order, LoyaltyPolicy policy) {
+    public void earnPointsFromOrder(Order order, main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.LoyaltyPolicy policy) {
         int earned = policy.calculatePoints(order.getTotal());
         loyaltyPoints += earned;
     }
 
+    public int getLoyaltyPoints() {
+        return loyaltyPoints;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setRole(String roleName) {
+        if (roleName == null || roleName.isBlank()) {
+            this.role = Role.CUSTOMER;
+            return;
+        }
+
+        try {
+            this.role = Role.valueOf(roleName.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException ex) {
+            this.role = Role.CUSTOMER;
+        }
+    }
 
     // Value object for User ID
     public static class UserId {

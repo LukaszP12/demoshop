@@ -1,7 +1,8 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.infrastructure.repository;
+package com.example.demoshop.infrastructure.repository;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.user.User;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.UserRepository;
+import com.example.demoshop.domain.model.user.User;
+import com.example.demoshop.domain.repository.UserRepository;
+
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -29,5 +30,10 @@ public class MongoUserRepository implements UserRepository {
     @Override
     public Optional<User> findByEmail(String email) {
         return repository.findByEmail(email);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return repository.existsByEmail(email);
     }
 }

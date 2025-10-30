@@ -1,4 +1,4 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue;
+package com.example.demoshop.domain.model.catalogue;
 
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 import org.springframework.data.annotation.Id;
@@ -19,7 +19,7 @@ public class Product {
     private int volume_ml;
     private int stockQuantity;
     private String description;
-    private List<ProductCategory> categories;
+    private List<main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductCategory> categories;
     private List<String> keywords;
     private double rating;
     private boolean available;
@@ -35,7 +35,7 @@ public class Product {
         this.stockQuantity = stockQuantity;
     }
 
-    public Product(String name, String type, String brand, Money price, int volume_ml, int stockQuantity, String description, List<ProductCategory> categories, List<String> keywords, double rating, boolean available) {
+    public Product(String name, String type, String brand, Money price, int volume_ml, int stockQuantity, String description, List<main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductCategory> categories, List<String> keywords, double rating, boolean available) {
         this.name = name;
         this.type = type;
         this.brand = brand;
@@ -66,13 +66,13 @@ public class Product {
         stockQuantity += quantity;
     }
 
-    public void addCategory(ProductCategory category) {
+    public void addCategory(main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductCategory category) {
         if (!categories.contains(category)) {
             categories.add(category);
         }
     }
 
-    public void removeCategory(ProductCategory category) {
+    public void removeCategory(main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductCategory category) {
         categories.remove(category);
     }
 
@@ -87,8 +87,8 @@ public class Product {
     }
 
     // Getters and setters
-    public ProductId getId() {
-        return new ProductId(id);
+    public main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductId getId() {
+        return new main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductId(id);
     }
 
     public String getName() {
@@ -155,11 +155,11 @@ public class Product {
 
     public void setKeywords(List<String> keywords) {this.keywords = keywords;}
 
-    public List<ProductCategory> getCategories() {
+    public List<main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductCategory> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<ProductCategory> categories) {
+    public void setCategories(List<main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductCategory> categories) {
         this.categories = categories;
     }
 

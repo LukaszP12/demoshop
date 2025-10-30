@@ -1,4 +1,5 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart;
+package com.example.demoshop.domain.model.cart;
+
 
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 

@@ -1,7 +1,7 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart;
+package com.example.demoshop.domain.model.cart;
 
+import com.example.demoshop.domain.model.catalogue.Product;
 import main.java.com.example.demoshop.java.com.example.demoshop.application.cart.ShippingPolicy;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.Product;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductId;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 
@@ -76,7 +76,7 @@ public class Cart {
     }
 
     // --- Restoration methods for snapshots ---
-    void restoreItem(CartItem item) {
+    public void restoreItem(CartItem item) {
         items.put(item.productId(), item);
     }
 
@@ -118,4 +118,7 @@ public class Cart {
         items.clear();
     }
 
+    public int totalItems() {
+        return items.size();
+    }
 }

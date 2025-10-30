@@ -1,11 +1,11 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.infrastructure.repository;
+package com.example.demoshop.infrastructure.repository;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.Product;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.ProductRepository;
+import com.example.demoshop.domain.model.catalogue.Product;
+import com.example.demoshop.domain.repository.ProductRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import org.springframework.data.domain.Pageable;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;

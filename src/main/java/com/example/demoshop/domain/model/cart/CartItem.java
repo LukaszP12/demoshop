@@ -1,6 +1,6 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart;
+package com.example.demoshop.domain.model.cart;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.Product;
+import com.example.demoshop.domain.model.catalogue.Product;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.catalogue.ProductId;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.common.Money;
 

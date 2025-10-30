@@ -1,7 +1,6 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.domain.repository;
+package com.example.demoshop.domain.repository;
 
-
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.Cart;
+import com.example.demoshop.domain.model.cart.Cart;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.CartId;
 
 import java.util.List;

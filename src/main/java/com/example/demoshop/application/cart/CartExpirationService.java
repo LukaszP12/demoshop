@@ -1,8 +1,8 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.application.cart;
+package com.example.demoshop.application.cart;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.Cart;
+import com.example.demoshop.domain.model.cart.Cart;
+import com.example.demoshop.domain.repository.CartRepository;
 import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.cart.CartId;
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.repository.CartRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 

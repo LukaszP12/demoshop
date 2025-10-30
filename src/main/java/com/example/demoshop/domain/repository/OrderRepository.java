@@ -1,6 +1,6 @@
-package main.java.com.example.demoshop.java.com.example.demoshop.domain.repository;
+package com.example.demoshop.domain.repository;
 
-import main.java.com.example.demoshop.java.com.example.demoshop.domain.model.order.Order;
+import com.example.demoshop.domain.model.order.Order;
 
 import java.util.List;
 import java.util.Optional;
