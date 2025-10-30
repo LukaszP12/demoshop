@@ -5,6 +5,7 @@ import example.demoshop.application.order.OrderWorkflowService;
 import example.demoshop.application.shipping.ShippingEventPublisher;
 import example.demoshop.application.shipping.ShippingService;
 import example.demoshop.domain.model.common.Money;
+import example.demoshop.domain.model.coupon.Coupon;
 import example.demoshop.domain.model.order.Order;
 import example.demoshop.domain.model.order.OrderItem;
 import example.demoshop.domain.model.warehouse.Warehouse;
@@ -78,11 +79,16 @@ class OrderWorkflowServiceWarehouseComponentTest {
     void shouldReserveStockInWarehouseWhenOrderIsPlaced() {
         // given
         OrderItem item = new OrderItem("P123", 2, Money.of(BigDecimal.valueOf(50), "USD"));
+        List<OrderItem> items = List.of(item);
+        BigDecimal total = BigDecimal.valueOf(100);
+        String currency = "USD";
+        Coupon coupon = null;
         // when
-        Order order = orderWorkflowService.placeOrder("user-1", List.of(item));
+        Order order = orderWorkflowService.placeOrder("user-1", items, total, currency, coupon);
         // then
         assertEquals(8, warehouse.getAvailableQuantity("P123"));
         assertEquals(2, warehouse.getReservedQuantity("P123"));
+
         verify(orderRepository).save(order);
         verify(warehouseRepository).save(warehouse);
     }
@@ -90,14 +96,20 @@ class OrderWorkflowServiceWarehouseComponentTest {
     @Test
     void shouldFailToPlaceOrderWhenStockIsInsufficient() {
         // given
-        OrderItem item = new OrderItem("P123", 15, Money.of(BigDecimal.valueOf(50),"USD"));
+        OrderItem item = new OrderItem("P123", 15, Money.of(BigDecimal.valueOf(50), "USD"));
+        List<OrderItem> items = List.of(item);
+        BigDecimal total = BigDecimal.valueOf(750);
+        String currency = "USD";
+        Coupon coupon = null;
 
         // when / then
         IllegalStateException ex = assertThrows(
                 IllegalStateException.class,
-                () -> orderWorkflowService.placeOrder("user-1", List.of(item))
+                () -> orderWorkflowService.placeOrder("user-1", items, total, currency, coupon)
         );
 
         assertTrue(ex.getMessage().contains("Not enough stock"));
+        verify(orderRepository, never()).save(any());
+        verify(warehouseRepository, never()).save(any());
     }
 }
