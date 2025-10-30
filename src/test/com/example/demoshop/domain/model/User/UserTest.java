@@ -1,4 +1,4 @@
-package java.com.example.demoshop.domain.model.User;
+package com.example.demoshop.domain.model.User;
 
 import example.demoshop.domain.event.UserRegisteredEvent;
 import example.demoshop.domain.model.shipping.Address;

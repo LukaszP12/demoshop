@@ -21,11 +21,11 @@ public class UserService {
 
 
     public User register(UserRegistrationDto dto) {
-        if (dto.getEmail() == null || dto.getPassword() == null || dto.getUsername() == null) {
+        if (dto.getUsername() == null || dto.getEmail() == null || dto.getPassword() == null) {
             throw new IllegalArgumentException("Missing registration data");
         }
 
-        if (userRepository.existsByEmail(dto.getEmail())){
+        if (userRepository.existsByEmail(dto.getEmail())) {
             throw new IllegalStateException("Email already registered");
         }
 
