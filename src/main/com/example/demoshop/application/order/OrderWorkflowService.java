@@ -29,6 +29,7 @@ import example.demoshop.domain.repository.OrderRepository;
 import example.demoshop.domain.repository.ProductRepository;
 import example.demoshop.domain.repository.ShipmentRepository;
 import example.demoshop.domain.repository.UserRepository;
+import example.demoshop.domain.repository.WarehouseRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +53,7 @@ public class OrderWorkflowService {
     private final UserRepository userRepository;
     private final OrderEventPublisher eventPublisher;
     private final ShippingEventPublisher shippingEventPublisher;
+    private final WarehouseRepository warehouseRepository;
 
     public OrderWorkflowService(OrderRepository orderRepository,
                                 CartRepository cartRepository,
@@ -61,7 +63,7 @@ public class OrderWorkflowService {
                                 CouponRepository couponRepository,
                                 @Qualifier("postgresUserRepository") UserRepository userRepository,
                                 OrderEventPublisher orderEventPublisher,
-                                ShippingEventPublisher shippingEventPublisher) {
+                                ShippingEventPublisher shippingEventPublisher, WarehouseRepository warehouseRepository) {
         this.orderRepository = orderRepository;
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
@@ -71,6 +73,7 @@ public class OrderWorkflowService {
         this.userRepository = userRepository;
         this.eventPublisher = orderEventPublisher;
         this.shippingEventPublisher = shippingEventPublisher;
+        this.warehouseRepository = warehouseRepository;
     }
 
     /**
@@ -266,7 +269,7 @@ public class OrderWorkflowService {
         Warehouse warehouse = warehouseRepository.findDefault();
 
         for (OrderItem item : items) {
-            warehouse.reserve(item.getProductId(), item.getQuantity());
+            warehouse.reserve(item.productId(), item.getQuantity());
         }
 
         warehouseRepository.save(warehouse);

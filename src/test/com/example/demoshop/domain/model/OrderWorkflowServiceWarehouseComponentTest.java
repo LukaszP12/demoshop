@@ -14,6 +14,7 @@ import example.demoshop.domain.repository.OrderRepository;
 import example.demoshop.domain.repository.ProductRepository;
 import example.demoshop.domain.repository.ShipmentRepository;
 import example.demoshop.domain.repository.UserRepository;
+import example.demoshop.domain.repository.WarehouseRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
