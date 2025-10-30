@@ -21,6 +21,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 class OrderWorkflowServiceWarehouseComponentTest {
@@ -84,4 +86,17 @@ class OrderWorkflowServiceWarehouseComponentTest {
         verify(warehouseRepository).save(warehouse);
     }
 
+    @Test
+    void shouldFailToPlaceOrderWhenStockIsInsufficient() {
+        // given
+        OrderItem item = new OrderItem("P123", 15, BigDecimal.valueOf(50));
+
+        // when / then
+        IllegalStateException ex = assertThrows(
+                IllegalStateException.class,
+                () -> orderWorkflowService.placeOrder("user-1", List.of(item))
+        );
+
+        assertTrue(ex.getMessage().contains("Not enough stock"));
+    }
 }
