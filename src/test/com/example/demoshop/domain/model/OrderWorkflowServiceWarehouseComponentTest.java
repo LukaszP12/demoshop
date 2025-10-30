@@ -89,7 +89,7 @@ class OrderWorkflowServiceWarehouseComponentTest {
     @Test
     void shouldFailToPlaceOrderWhenStockIsInsufficient() {
         // given
-        OrderItem item = new OrderItem("P123", 15, BigDecimal.valueOf(50));
+        OrderItem item = new OrderItem("P123", 15, Money.of(BigDecimal.valueOf(50),"USD"));
 
         // when / then
         IllegalStateException ex = assertThrows(
